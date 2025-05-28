@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blastzone | Player Rankings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: #0f0f0f;
+            color: #00ffe7;
+            min-height: 100vh;
+        }
+
+        .rank-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(26, 26, 26, 0.9);
+            border-radius: 20px;
+            border: 1px solid #00ffe7;
+            box-shadow: 0 0 20px #00ffe7;
+            text-align: center;
+        }
+
+        .circular-progress {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            background: conic-gradient(#00ffe7 var(--progress), #1a1a1a 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circular-progress::before {
+            content: "";
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #0f0f0f;
+        }
+
+        .progress-value {
+            position: relative;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ffe7;
+        }
+
+        .rank-title {
+            font-size: 2.5rem;
+            margin: 1rem 0;
+            text-shadow: 0 0 10px #00ffe7;
+        }
+
+        .rank-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: transparent;
+            color: #00ffe7;
+            border: 2px solid #00ffe7;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #00ffe7;
+            color: #0f0f0f;
+            box-shadow: 0 0 10px #00ffe7;
+        }
+
+        .rank-levels {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            text-align: left;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .rank-level {
+            padding: 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid #00ffe7;
+            transition: transform 0.3s ease;
+        }
+
+        .rank-level:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 255, 231, 0.2);
+        }
+
+        .current {
+            background: rgba(0, 255, 231, 0.1);
+            box-shadow: 0 0 20px #00ffe7;
+            border-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="goBack()" class="back-btn">← Back</button>
+    
+    <div class="rank-container">
+        <h1>Your Current Rank</h1>
+        <div id="playerRank">Loading rank data...</div>
+    </div>
+
+    <script>
+        const RANKS = [
+            { title: '🌱 Rookie', minPoints: 0, maxPoints: 50 },
+            { title: '🪨 Stonebreaker', minPoints: 50, maxPoints: 150 },
+            { title: '🥉 Bronze Brawler', minPoints: 150, maxPoints: 300 },
+            { title: '🥈 Silver Slayer', minPoints: 300, maxPoints: 500 },
+            { title: '🥇 Gold Gladiator', minPoints: 500, maxPoints: 800 },
+            { title: '💎 Platinum Phantom', minPoints: 800, maxPoints: 1200 },
+            { title: '🔥 Diamond Dominator', minPoints: 1200, maxPoints: 2000 },
+            { title: '⚡ Mythic Master', minPoints: 2000, maxPoints: 3500 },
+            { title: '👑 Legendary King', minPoints: 3500, maxPoints: 6000 },
+            { title: '🌌 Cosmic Emperor', minPoints: 6000, maxPoints: 10000 },
+            { title: '💀 Blastzone God', minPoints: 10000, maxPoints: 20000 }
+        ];
+
+        function displayRank() {
+            const currentUser = localStorage.getItem('currentUser');
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            
+            if (!currentUser || !users[currentUser]) {
+                window.location.href = './index.html';
+                return;
+            }
+
+            const user = users[currentUser];
+            const points = user.points || 0;
+            const currentRank = RANKS.find(rank => 
+                points >= rank.minPoints && points < rank.maxPoints
+            ) || RANKS[RANKS.length - 1];
+
+            const progress = ((points - currentRank.minPoints) / 
+                (currentRank.maxPoints - currentRank.minPoints)) * 100;
+
+            const rankHTML = `
+                <div class="rank-title">${currentRank.title}</div>
+                <div class="circular-progress" style="--progress: ${progress}%">
+                    <div class="progress-value">${Math.floor(progress)}%</div>
+                </div>
+                <div class="rank-info">
+                    <div>Points: ${points}</div>
+                    <div>Next Rank: ${points}/${currentRank.maxPoints}</div>
+                </div>
+                <div class="rank-levels">
+                    ${RANKS.map(rank => `
+                        <div class="rank-level ${rank.title === currentRank.title ? 'current' : ''}">
+                            <div>${rank.title}</div>
+                            <small>${rank.minPoints} - ${rank.maxPoints} points</small>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.getElementById('playerRank').innerHTML = rankHTML;
+        }
+
+        function goBack() {
+            window.location.href = './index.html';
+        }
+
+        // Check login and display rank
+        window.onload = function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = './index.html';
+            } else {
+                displayRank();
+            }
+        };
+    </script>
+</body>
+</html>
