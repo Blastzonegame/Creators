@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Blastzone | Revolutionizing Game Creation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Fonts & AOS Animation -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #0f0f0f;
+      color: #00ffe7;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 4rem 2rem 2rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+    }
+
+    nav {
+      margin-top: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .nav-links a {
+      color: #00ffe7;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 2px solid #00ffe7;
+      border-radius: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .nav-links a:hover {
+      background: #00ffe7;
+      color: #0f0f0f;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 1rem auto;
+      max-width: 600px;
+    }
+
+    .download-btn {
+      background-color: #00ffe7;
+      color: #0f0f0f;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .countdown {
+      margin-top: 30px;
+      font-size: 1.2rem;
+    }
+
+    section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+    }
+
+    .card {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 20px;
+      border: 1px solid #00ffe7;
+      box-shadow: 0 0 10px #00ffe7;
+    }
+
+    .card h2 {
+      color: #00ffe7;
+    }
+
+    .avatar {
+      display: block;
+      width: 100px;
+      margin: 0 auto;
+      margin-bottom: 2rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #000;
+    }
+
+    .glow {
+      text-shadow: 0 0 10px #00ffe7;
+    }
+
+    .contact-info {
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    a {
+      color: #00ffe7;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .login-modal {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 20px;
+      border: 1px solid #00ffe7;
+      box-shadow: 0 0 20px #00ffe7;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-modal h2 {
+      color: #00ffe7;
+      margin-bottom: 2rem;
+    }
+
+    .login-modal input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #00ffe7;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .login-modal input:focus {
+      box-shadow: 0 0 10px #00ffe7;
+    }
+
+    .login-modal select {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #00ffe7;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .login-modal select option {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .error-message {
+      color: #ff4444;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid #ff4444;
+      text-align: left;
+    }
+
+    .login-modal input:invalid {
+      border-color: #ff4444;
+    }
+
+    .login-modal input:valid {
+      border-color: #00ffe7;
+    }
+
+    .login-btn {
+      background: #00ffe7;
+      color: #0f0f0f;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .signup-btn {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      color: #00ffe7;
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.5rem;
+    }
+
+    .signup-btn:hover {
+      text-decoration: underline;
+    }
+
+    .login-options {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .header-controls {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 100;
+    }
+
+    .logout-btn {
+      background: transparent;
+      color: #00ffe7;
+      border: 2px solid #00ffe7;
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: #00ffe7;
+      color: #0f0f0f;
+      box-shadow: 0 0 10px #00ffe7;
+    }
+
+    .studio-link {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.8rem 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid #00ffe7;
+      border-radius: 20px;
+      color: #00ffe7;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .studio-link:hover {
+      transform: translateY(-2px);
+      background: rgba(0, 255, 231, 0.1);
+      box-shadow: 0 0 20px rgba(0, 255, 231, 0.3);
+    }
+
+    .studio-link .icon {
+      font-size: 1.2em;
+      animation: glow 2s infinite;
+    }
+
+    @keyframes glow {
+      0%,
+      100% {
+        text-shadow: 0 0 10px rgba(0, 255, 231, 0.5);
+      }
+
+      50% {
+        text-shadow: 0 0 20px rgba(0, 255, 231, 0.8);
+      }
+    }
+
+    .ai-taskbar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .ai-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+      border: 2px solid #00ffe7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .ai-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0, 255, 231, 0.4);
+    }
+
+    .ai-avatar {
+      font-size: 30px;
+      animation: pulse 2s infinite;
+    }
+
+    .ai-chat-container {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 300px;
+      height: 400px;
+      background: rgba(26, 26, 26, 0.95);
+      border: 2px solid #00ffe7;
+      border-radius: 20px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ai-chat-header {
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      color: #00ffe7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ai-close {
+      background: none;
+      border: none;
+      color: #00ffe7;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .ai-chat-messages {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ai-message {
+      background: rgba(0, 255, 231, 0.1);
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 231, 0.2);
+    }
+
+    .user-message {
+      background: rgba(0, 255, 231, 0.2);
+      margin-left: auto;
+    }
+
+    .ai-input-container {
+      padding: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .ai-input-container input {
+      flex-grow: 1;
+      padding: 0.5rem;
+      border: 1px solid #00ffe7;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+    }
+
+    .ai-send,
+    .ai-mic {
+      background: transparent;
+      border: 1px solid #00ffe7;
+      color: #00ffe7;
+      padding: 0.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .ai-send:hover,
+    .ai-mic:hover {
+      background: rgba(0, 255, 231, 0.1);
+    }
+
+    .rewards-link {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.8rem 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid #00ffe7;
+      border-radius: 20px;
+      color: #00ffe7;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .rewards-link:hover {
+      transform: translateY(-2px);
+      background: rgba(0, 255, 231, 0.1);
+      box-shadow: 0 0 20px rgba(0, 255, 231, 0.3);
+    }
+
+    .rewards-link .icon {
+      font-size: 1.2em;
+      animation: glow 2s infinite;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="particles-js"></div>
+
+  <!-- Login Overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-modal" data-aos="zoom-in">
+      <!-- Login Form -->
+      <div id="loginForm">
+        <h2>🎮 Welcome to Blastzone</h2>
+        <form onsubmit="return handleLogin(event)">
+          <input type="text" placeholder="Username" required>
+          <input type="password" placeholder="Password" required>
+          <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="login-options">
+          <a href="#" onclick="toggleForms('signupForm')" class="signup-btn">Create New Account</a>
+        </div>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signupForm" style="display: none;">
+        <h2>🎮 Create Account</h2>
+        <form onsubmit="return handleSignup(event)">
+          <input type="text" name="newUsername" placeholder="Create Username" required>
+          <input type="password" name="newPassword" placeholder="Create Password" required>
+          <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+          <input type="number" name="age" placeholder="Age" min="13" max="120" required>
+          <select name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+            <option value="prefer-not">Prefer not to say</option>
+          </select>
+          <button type="submit" class="login-btn">Create Account</button>
+          <div class="login-options">
+            <a href="#" onclick="toggleForms('loginForm')">Back to Login</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content (Initially Hidden) -->
+  <div id="mainContent" style="display: none;">
+    <div class="header-controls">
+      <button onclick="handleLogout()" class="logout-btn">Logout</button>
+    </div>
+    <header data-aos="fade-down">
+      <h1>🚀 Welcome to Blastzone</h1>
+      <nav>
+        <div class="nav-links">
+          <a href="studio.html" class="studio-link">
+            <span class="icon">🎮</span>
+            Game Studio
+          </a>
+          <a href="host.html" class="nav-link">Host Platform</a>
+          <a href="rewards.html" class="rewards-link">
+            <span class="icon">🏆</span>
+            Reward System
+          </a>
+          <a href="ranking.html" class="nav-link">Ranking System</a>
+        </div>
+      </nav>
+      <p>The Ultimate Platform to Create and Play Games Like Never Before</p>
+      <iframe 
+        width="80%" height="450"
+        src="https://www.youtube.com/embed/I_cEjVUmyNc"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="border: 2px solid #00ffe7; border-radius: 10px; margin-top: 20px;">
+      </iframe>
+      <button class="download-btn">⬇ Download Now</button>
+      <div class="countdown" id="countdown">⏳ Launching in: <span id="time"></span></div>
+    </header>
+
+    <section>
+      <div class="card" data-aos="zoom-in"><h2>🎮 Game Studio</h2><p>Create and publish your own worlds with intuitive, powerful tools.</p></div>
+      <div class="card" data-aos="zoom-in"><h2>🏅 Rankings</h2><p>Rise to glory as a top creator or gamer, and earn rewards that matter.</p></div>
+      <div class="card" data-aos="zoom-in"><h2>⚡ Power-Ups</h2><p>Unleash powerful abilities with game-changing upgrades.</p></div>
+      <div class="card" data-aos="zoom-in"><h2>🌐 Social Worlds</h2><p>Meet, chat, and collaborate in immersive shared environments.</p></div>
+    
+      <div class="card" data-aos="zoom-in"><h2>💡 AI Assistance</h2><p>Use smart tools to help build, animate, and balance your games.</p></div>
+      <div class="card" data-aos="zoom-in"><h2>👾 Avatar Arena</h2><p>Battle with fully customizable avatars in high-intensity multiplayer matches.</p></div>
+      <div class="card" data-aos="zoom-in"><h2>💡 AI Assistance</h2><p>Use smart tools to help build, animatm</h2><p>Play anywhere: web, mobile, console — all from one account.</p></div>
+      <div class="card" data-aos="zoom-in"><h2>🎨 Skin Customizer</h2><p>Build and trade character styles, weapons, and gear in real-time.</p></div>
+      <div class="card" data-aos="zzoom-in"><h2>🎥 Game Replays</h2><p>Watch epic moments and share highlights with your community.</p></div>
+      <div class="card" data-aos="zoom-in"><h2>📦 Host Platform</h2><p>Play all your favorite user-created games in one place.</p></div>
+    </section>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712107.png" class="avatar" alt="Bot Assistant" />
+
+    <footer>
+      <div class="glow">&copy; 2025 Blastzone — Built for Creators and Gamers</div>
+      <div class="contact-info">
+        Developed by <strong>Monish H.G</strong><br>
+        📞 <a href="tel:+919791802464">+91 97918 02464</a><br>
+        ✉ <a href="mailto:Monishh2h10@gmail.com">Monishh2h10@gmail.com</a><br>
+        <small>&copy; Monish H.G. All rights reserved.</small>
+      </div>
+    </footer>
+  </div>
+
+  <!-- AI Taskbar -->
+  <div class="ai-taskbar" id="aiTaskbar">
+    <div class="ai-icon" onclick="toggleAI()">
+        <span class="ai-avatar">🤖</span>
+    </div>
+    <div class="ai-chat-container" id="aiChatContainer">
+        <div class="ai-chat-header">
+            <span>BlastZone AI Assistant</span>
+            <button class="ai-close" onclick="toggleAI()">×</button>
+        </div>
+        <div class="ai-chat-messages" id="aiMessages">
+            <div class="ai-message">Hello! I'm your BlastZone assistant. How can I help you today?</div>
+        </div>
+        <div class="ai-input-container">
+            <input type="text" id="aiInput" placeholder="Ask me anything...">
+            <button onclick="handleAIChat()" class="ai-send">Send</button>
+            <button onclick="startVoiceInput()" class="ai-mic">🎤</button>
+        </div>
+    </div>
+</div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80 },
+        color: { value: "#00ffe7" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: "#00ffe7",
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 3
+        }
+      }
+    });
+
+    // Countdown Timer
+    const countdownEl = document.getElementById("time");
+    const launchDate = new Date("2025-06-01T00:00:00");
+    setInterval(() => {
+      const now = new Date();
+      const diff = launchDate - now;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
+
+    // Store users in localStorage for demo
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+
+    function toggleForms(formToShow) {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById(formToShow).style.display = 'block';
+    }
+
+    function handleSignup(event) {
+      event.preventDefault();
+      const form = event.target;
+      const username = form.newUsername.value.trim();
+      const password = form.newPassword.value;
+      const confirmPass = form.confirmPassword.value;
+      const age = form.age.value;
+      const gender = form.gender.value;
+
+      // Clear previous error messages
+      const errorDiv = form.querySelector('.error-message');
+      if (errorDiv) errorDiv.remove();
+
+      // Validate username
+      if (username.length < 3) {
+        showError(form, 'Username must be at least 3 characters long');
+        return false;
+      }
+
+      // Check if username exists
+      if (users[username]) {
+        showError(form, 'This username is already taken. Please choose another one.');
+        form.newUsername.focus();
+        form.newUsername.select();
+        return false;
+      }
+
+      // Validate password match
+      if (password !== confirmPass) {
+        showError(form, 'Passwords do not match!');
+        return false;
+      }
+
+      // Store new user with initial rank and rewards data
+      users[username] = {
+        password,
+        age,
+        gender,
+        joinedDate: new Date().toISOString(),
+        points: 0,
+        rewards: {} // Will be initialized when visiting rewards page
+    };
+    
+    localStorage.setItem('users', JSON.stringify(users));
+
+      // Show success and return to login
+      alert('Account created successfully! Please login.');
+      form.reset();
+      toggleForms('loginForm');
+      return false;
+    }
+
+    function showError(form, message) {
+      // Remove any existing error messages
+      const existingError = form.querySelector('.error-message');
+      if (existingError) existingError.remove();
+
+      // Create and show new error message with fade-in effect
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error-message';
+      errorDiv.textContent = message;
+      errorDiv.style.opacity = '0';
+      form.appendChild(errorDiv);
+
+      // Fade in the error message
+      setTimeout(() => {
+        errorDiv.style.transition = 'opacity 0.3s ease';
+        errorDiv.style.opacity = '1';
+      }, 10);
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const form = event.target;
+      const username = form.elements[0].value;
+      const password = form.elements[1].value;
+
+      // Clear previous error messages
+      const errorDiv = form.querySelector('.error-message');
+      if (errorDiv) errorDiv.remove();
+
+      // Validate credentials
+      if (!users[username] || users[username].password !== password) {
+        showError(form, 'Invalid username or password!');
+        return false;
+      }
+
+      // Initialize rewards if not present
+      if (!users[username].rewards) {
+        users[username].rewards = {
+            easy: [],
+            medium: [],
+            hard: [],
+            expert: []
+        };
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+      // Login successful
+      localStorage.setItem('currentUser', username);
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      return false;
+    }
+
+    function handleLogout() {
+        // Remove user from localStorage
+        localStorage.removeItem('currentUser');
+        
+        // Show login overlay and hide main content
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('mainContent').style.display = 'none';
+        
+        // Reset login form if needed
+        const loginForm = document.querySelector('#loginForm form');
+        if (loginForm) loginForm.reset();
+    }
+
+    // Check if user is logged in
+    function checkLogin() {
+      const currentUser = localStorage.getItem('currentUser');
+      if (currentUser && users[currentUser]) {
+        // User is logged in
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+      } else {
+        // User is not logged in
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('mainContent').style.display = 'none';
+      }
+    }
+
+    // Run on page load
+    window.onload = function() {
+      checkLogin();
+      AOS.init();
+    };
+
+    // AI Taskbar Functions
+    function toggleAI() {
+        const container = document.getElementById('aiChatContainer');
+        container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function handleAIChat() {
+        const input = document.getElementById('aiInput');
+        const message = input.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage(message, true);
+        input.value = '';
+
+        // AI response
+        processAIResponse(message);
+    }
+
+    function addMessage(text, isUser = false) {
+        const messages = document.getElementById('aiMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `ai-message ${isUser ? 'user-message' : ''}`;
+        messageDiv.textContent = text;
+        messages.appendChild(messageDiv);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function processAIResponse(userMessage) {
+        const message = userMessage.toLowerCase();
+        let response;
+
+        // Comprehensive response mapping
+        if (message.includes('hello') || message.includes('hi')) {
+            response = 'Hello! I\'m your BlastZone AI assistant. How can I help you today?';
+        }
+        else if (message.includes('game studio') || message.includes('create game')) {
+            response = 'The Game Studio provides powerful tools to create your own games! You can:\n' +
+                      '• Use drag-and-drop game elements\n' +
+                      '• Design custom levels and worlds\n' +
+                      '• Add animations and special effects\n' +
+                      '• Test your game in real-time';
+        }
+        else if (message.includes('host') || message.includes('platform')) {
+            response = 'The Host Platform allows you to:\n' +
+                      '• Upload and publish your games\n' +
+                      '• Manage player access and permissions\n' +
+                      '• Track game performance and analytics\n' +
+                      '• Monetize your creations';
+        }
+        else if (message.includes('reward') || message.includes('rewards')) {
+            response = 'In our Rewards System you can:\n' +
+                      '• Earn points for creating and playing games\n' +
+                      '• Complete challenges for special badges\n' +
+                      '• Unlock exclusive content and features\n' +
+                      '• Trade rewards with other players';
+        }
+        else if (message.includes('rank') || message.includes('ranking')) {
+            response = 'The Ranking System features:\n' +
+                      '• Global leaderboards\n' +
+                      '• Skill-based matchmaking\n' +
+                      '• Seasonal competitions\n' +
+                      '• Achievement tracking';
+        }
+        else if (message.includes('points') || message.includes('score')) {
+            const currentUser = localStorage.getItem('currentUser');
+            const users = JSON.parse(localStorage.getItem('users'));
+            const points = users[currentUser]?.points || 0;
+            response = `You currently have ${points} points! Keep playing and creating to earn more.`;
+        }
+        else if (message.includes('download') || message.includes('install')) {
+            response = 'You can download BlastZone by clicking the "Download Now" button on the homepage. The full release is coming on June 1st, 2025!';
+        }
+        else if (message.includes('account') || message.includes('profile')) {
+            response = 'To manage your account:\n' +
+                      '• Login using your credentials\n' +
+                      '• Access your profile from the header menu\n' +
+                      '• Update your information and preferences\n' +
+                      '• View your game history and statistics';
+        }
+        else if (message.includes('help') || message.includes('support')) {
+            response = 'I can help you with:\n' +
+                      '• Game creation and publishing\n' +
+                      '• Platform features and tools\n' +
+                      '• Account management\n' +
+                      '• Rewards and rankings\n' +
+                      'Just ask me specific questions about any topic!';
+        }
+        else if (message.includes('how to') || message.includes('tutorial')) {
+            response = 'Check out our tutorials:\n' +
+                      '• Game Studio basics\n' +
+                      '• Level design masterclass\n' +
+                      '• Publishing your first game\n' +
+                      '• Advanced game mechanics\n' +
+                      'Which topic interests you?';
+        }
+        else {
+            response = 'I understand you\'re asking about "' + userMessage + '". Could you please be more specific? ' +
+                      'I can help with game creation, hosting, rewards, rankings, accounts, or technical support.';
+        }
+
+        addMessage(response);
+        speakText(response);
+    }
+
+    // Speech Recognition
+    function startVoiceInput() {
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = function(event) {
+                const text = event.results[0][0].transcript;
+                document.getElementById('aiInput').value = text;
+                handleAIChat();
+            };
+
+            recognition.start();
+        } else {
+            alert('Speech recognition is not supported in your browser.');
+        }
+    }
+
+    // Text-to-Speech
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1;
+            utterance.pitch = 1;
+            speechSynthesis.speak(utterance);
+        }
+    }
+
+    // Add keyboard shortcuts
+    document.getElementById('aiInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleAIChat();
+        }
+    });
+  </script>
+
+</body>
+</html>
