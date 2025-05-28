@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blastzone Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        /* Core styles */
+        :root {
+            --primary: #00ffe7;
+            --dark: #1a1a1a;
+            --panel: rgba(26, 26, 26, 0.95);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: #0f0f0f;
+            color: var(--primary);
+            height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            overflow: hidden;
+        }
+
+        /* Layout components */
+        .studio-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            height: 100%;
+        }
+
+        .panel {
+            background: var(--panel);
+            padding: 1rem;
+            border-right: 1px solid var(--primary);
+        }
+
+        .viewport {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .studio-header {
+            background: var(--panel);
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--primary);
+        }
+
+        /* Menu bar */
+        .menu-bar {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem;
+            background: var(--dark);
+            border-bottom: 1px solid var(--primary);
+        }
+
+        .menu-item {
+            position: relative;
+            cursor: pointer;
+            padding: 0.3rem 0.8rem;
+            color: var(--primary);
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 255, 231, 0.1);
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--dark);
+            border-bottom: 1px solid var(--primary);
+            flex-wrap: wrap;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 0.3rem;
+            padding: 0 0.5rem;
+            border-right: 1px solid rgba(0, 255, 231, 0.3);
+        }
+
+        .tool-button {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tool-button:hover {
+            background: var(--primary);
+            color: var(--dark);
+        }
+
+        /* Explorer panel */
+        .explorer-panel {
+            background: var(--panel);
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Properties panel */
+        .properties-panel {
+            background: var(--panel);
+            width: 250px;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            padding: 0.5rem;
+            background: var(--dark);
+            border-bottom: 1px solid var(--primary);
+            font-weight: bold;
+        }
+
+        .tree-view {
+            padding: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .tree-item {
+            padding: 0.2rem 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tree-item:hover {
+            background: rgba(0, 255, 231, 0.1);
+        }
+
+        /* Properties */
+        .properties {
+            padding: 1rem;
+        }
+
+        .property-group {
+            margin: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid rgba(0, 255, 231, 0.2);
+            border-radius: 4px;
+        }
+
+        .property-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 0.3rem 0;
+        }
+
+        .property-label {
+            color: #888;
+        }
+
+        .property-value {
+            color: var(--primary);
+        }
+
+        /* Status bar */
+        .status-bar {
+            background: var(--panel);
+            padding: 0.5rem 1rem;
+            border-top: 1px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* AI Assistant styles */
+        .ai-assistant {
+            position: fixed;
+            top: 120px;  /* Position below the toolbar */
+            right: 20px;
+            width: 300px;
+            background: var(--panel);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 231, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .ai-header {
+            padding: 0.8rem;
+            background: var(--dark);
+            border-bottom: 1px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
+        .ai-toggle {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .ai-content {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .ai-message {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: rgba(0, 255, 231, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .ai-message.user {
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: #fff;
+        }
+
+        .ai-input-container {
+            display: flex;
+            padding: 1rem;
+            gap: 0.5rem;
+            border-top: 1px solid rgba(0, 255, 231, 0.2);
+        }
+
+        .ai-input-container input {
+            flex: 1;
+            background: rgba(0, 255, 231, 0.1);
+            border: 1px solid var(--primary);
+            color: #fff;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .ai-input-container button {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-input-container button:hover {
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 255, 231, 0.5);
+        }
+
+        /* Context menu styles */
+        .context-menu {
+            position: absolute;
+            background: var(--panel);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 0.5rem 0;
+            min-width: 150px;
+            box-shadow: 0 0 20px rgba(0, 255, 231, 0.2);
+            z-index: 1000;
+        }
+
+        .context-menu .menu-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .context-menu .menu-item:hover {
+            background: rgba(0, 255, 231, 0.1);
+        }
+
+        /* Template menu styles */
+        .template-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 1200px;
+            height: 80vh;
+            background: var(--panel);
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: calc(80vh - 50px);
+        }
+
+        .template-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 255, 231, 0.2);
+            background: rgba(0, 255, 231, 0.05);
+        }
+
+        .template-icon {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .template-info {
+            flex: 1;
+        }
+
+        .template-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .template-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .template-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .template-tags span {
+            background: rgba(0, 255, 231, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .studio-container {
+                grid-template-columns: 1fr;
+            }
+
+            .explorer-panel, .properties-panel {
+                width: 100%;
+                height: 200px;
+                position: relative;
+            }
+
+            .viewport {
+                height: calc(100vh - 200px);
+            }
+
+            .ai-assistant {
+                width: 100%;
+                height: 300px;
+                border-radius: 8px 8px 0 0;
+            }
+        }
+
+        /* Add a new style for the AI button active state */
+        .tool-button.active {
+            background: var(--primary);
+            color: var(--dark);
+            box-shadow: 0 0 10px rgba(0, 255, 231, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="studio-header">
+        <div class="tool-group">
+            <button class="tool-button">📁 File</button>
+            <button class="tool-button">✏️ Edit</button>
+            <button class="tool-button">👁️ View</button>
+            <button class="tool-button">🛠️ Tools</button>
+            <button class="tool-button">⚙️ Settings</button>
+            <button class="tool-button" onclick="toggleAI()" title="AI Assistant">🤖 AI</button>
+        </div>
+
+        <!-- Add this after your tool-group div in the studio-header -->
+        <div class="template-menu" id="templateMenu">
+            <div class="panel-header">
+                <span>🎲 Game Templates</span>
+                <button onclick="closeTemplateMenu()">×</button>
+            </div>
+            <div class="templates-grid">
+                <div class="template-card" onclick="loadTemplate('fps')">
+                    <div class="template-icon">🎯</div>
+                    <div class="template-info">
+                        <h3>FPS Arena</h3>
+                        <p>Complete shooter game setup with weapons, maps, and respawn system</p>
+                        <div class="template-tags">
+                            <span>Multiplayer</span>
+                            <span>Combat</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('platformer')">
+                    <div class="template-icon">🏃</div>
+                    <div class="template-info">
+                        <h3>2D Platformer</h3>
+                        <p>Side-scrolling adventure with physics and collectibles</p>
+                        <div class="template-tags">
+                            <span>2D</span>
+                            <span>Adventure</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('racing')">
+                    <div class="template-icon">🏎️</div>
+                    <div class="template-info">
+                        <h3>Racing Circuit</h3>
+                        <p>Vehicle physics, tracks, and time trials</p>
+                        <div class="template-tags">
+                            <span>Racing</span>
+                            <span>Physics</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('rpg')">
+                    <div class="template-icon">⚔️</div>
+                    <div class="template-info">
+                        <h3>RPG Adventure</h3>
+                        <p>Character progression, inventory, and quest system</p>
+                        <div class="template-tags">
+                            <span>RPG</span>
+                            <span>Story</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('battle-royale')">
+                    <div class="template-icon">🪂</div>
+                    <div class="template-info">
+                        <h3>Battle Royale</h3>
+                        <p>Large map, shrinking zone, and loot system</p>
+                        <div class="template-tags">
+                            <span>Multiplayer</span>
+                            <span>Survival</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('tower-defense')">
+                    <div class="template-icon">🗼</div>
+                    <div class="template-info">
+                        <h3>Tower Defense</h3>
+                        <p>Strategic tower placement and enemy wave system</p>
+                        <div class="template-tags">
+                            <span>Strategy</span>
+                            <span>Defense</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('puzzle')">
+                    <div class="template-icon">🧩</div>
+                    <div class="template-info">
+                        <h3>Puzzle Game</h3>
+                        <p>Physics-based puzzles and level progression</p>
+                        <div class="template-tags">
+                            <span>Puzzle</span>
+                            <span>Logic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('survival')">
+                    <div class="template-icon">🏕️</div>
+                    <div class="template-info">
+                        <h3>Survival World</h3>
+                        <p>Crafting, resource gathering, and base building</p>
+                        <div class="template-tags">
+                            <span>Survival</span>
+                            <span>Crafting</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('card-game')">
+                    <div class="template-icon">🃏</div>
+                    <div class="template-info">
+                        <h3>Card Battler</h3>
+                        <p>Deck building and turn-based combat system</p>
+                        <div class="template-tags">
+                            <span>Cards</span>
+                            <span>Strategy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="loadTemplate('space-sim')">
+                    <div class="template-icon">🚀</div>
+                    <div class="template-info">
+                        <h3>Space Simulator</h3>
+                        <p>Space physics, combat, and exploration mechanics</p>
+                        <div class="template-tags">
+                            <span>Space</span>
+                            <span>Simulation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-bar">
+        <div class="menu-item">Home</div>
+        <div class="menu-item">Model</div>
+        <div class="menu-item">Test</div>
+        <div class="menu-item">View</div>
+        <div class="menu-item">Plugins</div>
+    </div>
+
+    <div class="toolbar">
+        <div class="tool-group">
+            <button class="tool-button" title="Select">🔍</button>
+            <button class="tool-button" title="Move">↔️</button>
+            <button class="tool-button" title="Scale">⇲</button>
+            <button class="tool-button" title="Rotate">↻</button>
+        </div>
+        <div class="tool-group">
+            <button class="tool-button" title="Part">📦</button>
+            <button class="tool-button" title="Sphere">⚪</button>
+            <button class="tool-button" title="Cylinder">🗑️</button>
+        </div>
+        <div class="tool-group">
+            <button class="tool-button" title="Material">🎨</button>
+            <button class="tool-button" title="Color">🖌️</button>
+            <button class="tool-button" title="Texture">📷</button>
+        </div>
+        <div class="tool-group">
+            <button class="tool-button" title="Script">📜</button>
+            <button class="tool-button" title="Animation">🎬</button>
+            <button class="tool-button" title="Physics">⚡</button>
+        </div>
+    </div>
+
+    <div class="studio-container">
+        <div class="panel explorer-panel">
+            <div class="panel-header">Explorer</div>
+            <div class="tree-view">
+                <div class="tree-item">🌐 Workspace</div>
+                <div class="tree-item" style="padding-left: 1.5rem">📦 Part1</div>
+                <div class="tree-item" style="padding-left: 1.5rem">⚪ Sphere1</div>
+                <div class="tree-item">📜 Scripts</div>
+                <div class="tree-item">🎮 StarterGui</div>
+                <div class="tree-item">👤 Players</div>
+                <div class="tree-item">🌍 Lighting</div>
+            </div>
+        </div>
+
+        <div class="viewport" id="viewport"></div>
+
+        <div class="panel properties-panel">
+            <div class="panel-header">Properties</div>
+            <div class="property-group">
+                <div class="group-header">Transform</div>
+                <div class="property-row">
+                    <span class="property-label">Position</span>
+                    <span class="property-value">0, 0, 0</span>
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Rotation</span>
+                    <span class="property-value">0, 0, 0</span>
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Scale</span>
+                    <span class="property-value">1, 1, 1</span>
+                </div>
+            </div>
+
+            <div class="property-group">
+                <div class="group-header">Appearance</div>
+                <div class="property-row">
+                    <span class="property-label">Color</span>
+                    <input type="color" value="#00ffe7">
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Material</span>
+                    <select>
+                        <option>Plastic</option>
+                        <option>Metal</option>
+                        <option>Glass</option>
+                        <option>Wood</option>
+                    </select>
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Transparency</span>
+                    <input type="range" min="0" max="1" step="0.1" value="0">
+                </div>
+            </div>
+
+            <div class="property-group">
+                <div class="group-header">Physics</div>
+                <div class="property-row">
+                    <span class="property-label">Anchored</span>
+                    <input type="checkbox">
+                </div>
+                <div class="property-row">
+                    <span class="property-label">CanCollide</span>
+                    <input type="checkbox" checked>
+                </div>
+                <div class="property-row">
+                    <span class="property-label">Mass</span>
+                    <input type="number" value="1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div>Objects: <span id="objectCount">0</span></div>
+        <div>FPS: <span id="fps">60</span></div>
+        <div>Selected: <span id="selectedObject">None</span></div>
+    </div>
+
+    <div class="ai-assistant" id="aiAssistant">
+        <div class="ai-header">
+            <span>🤖 Studio Assistant</span>
+            <button class="ai-toggle" onclick="toggleAI()">_</button>
+        </div>
+        <div class="ai-content">
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-message">
+                    Hello! I'm your Studio Assistant. I can help you with:
+                    • Creating objects
+                    • Scripting help
+                    • Best practices
+                    • Tutorials
+                    Just ask me anything!
+                </div>
+            </div>
+            <div class="ai-input-container">
+                <input type="text" id="aiInput" placeholder="Ask me anything...">
+                <button onclick="sendToAI()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, controls, transformControl;
+        let selectedObject = null;
+        const objects = [];
+        let lastTime = performance.now();
+
+        // Initialize Three.js scene
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a1a);
+
+            // Camera setup
+            const viewport = document.getElementById('viewport');
+            const aspectRatio = viewport.clientWidth / viewport.clientHeight;
+            camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+            camera.position.set(5, 5, 5);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.innerHTML = ''; // Clear viewport
+            viewport.appendChild(renderer.domElement);
+
+            // Grid helper
+            const grid = new THREE.GridHelper(20, 20, 0x00ffe7, 0x004444);
+            scene.add(grid);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+
+            transformControl = new THREE.TransformControls(camera, renderer.domElement);
+            scene.add(transformControl);
+
+            transformControl.addEventListener('dragging-changed', function(event) {
+                controls.enabled = !event.value;
+            });
+
+            // Add tool button event listeners
+            document.querySelectorAll('.tool-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.title;
+                    const activeButtons = document.querySelectorAll('.tool-button.active');
+                    activeButtons.forEach(btn => {
+                        if (btn !== this && !btn.classList.contains('ai-toggle')) {
+                            btn.classList.remove('active');
+                        }
+                    });
+
+                    switch(action) {
+                        case 'Select':
+                            this.classList.toggle('active');
+                            transformControl.detach();
+                            controls.enabled = true;
+                            break;
+                        case 'Move':
+                            if(selectedObject) {
+                                this.classList.toggle('active');
+                                transformControl.setMode('translate');
+                                transformControl.attach(selectedObject);
+                            }
+                            break;
+                        case 'Scale':
+                            if(selectedObject) {
+                                this.classList.toggle('active');
+                                transformControl.setMode('scale');
+                                transformControl.attach(selectedObject);
+                            }
+                            break;
+                        case 'Rotate':
+                            if(selectedObject) {
+                                this.classList.toggle('active');
+                                transformControl.setMode('rotate');
+                                transformControl.attach(selectedObject);
+                            }
+                            break;
+                        case 'Part':
+                            createObject('cube');
+                            break;
+                        case 'Sphere':
+                            createObject('sphere');
+                            break;
+                        case 'Cylinder':
+                            createObject('cylinder');
+                            break;
+                        case 'Material':
+                            if(selectedObject) openMaterialPanel();
+                            break;
+                        case 'Color':
+                            if(selectedObject) openColorPicker();
+                            break;
+                        case 'Texture':
+                            if(selectedObject) openTexturePanel();
+                            break;
+                        case 'Script':
+                            if(selectedObject) openScriptEditor();
+                            break;
+                        case 'Animation':
+                            if(selectedObject) openAnimationEditor();
+                            break;
+                        case 'Physics':
+                            if(selectedObject) openPhysicsPanel();
+                            break;
+                    }
+                });
+            });
+
+            // Add click event listener to viewport for object selection
+            renderer.domElement.addEventListener('click', onViewportClick);
+
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize, false);
+
+            animate();
+        }
+
+        function onViewportClick(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera({ x, y }, camera);
+
+            const intersects = raycaster.intersectObjects(objects);
+            if (intersects.length > 0) {
+                selectObject(intersects[0].object);
+            } else if (selectedObject) {
+                selectedObject.material.emissive.setHex(0x000000);
+                transformControl.detach();
+                selectedObject = null;
+                document.getElementById('selectedObject').textContent = 'None';
+            }
+        }
+
+        function createObject(type) {
+            let geometry, material;
+
+            switch(type) {
+                case 'cube':
+                    geometry = new THREE.BoxGeometry();
+                    break;
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(0.5);
+                    break;
+                case 'cylinder':
+                    geometry = new THREE.CylinderGeometry(0.5, 0.5, 1);
+                    break;
+                case 'plane':
+                    geometry = new THREE.PlaneGeometry(1, 1);
+                    break;
+            }
+
+            material = new THREE.MeshStandardMaterial({ 
+                color: 0x00ffe7,
+                metalness: 0.3,
+                roughness: 0.4
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.name = `${type}_${objects.length}`;
+
+            // Add physics properties
+            mesh.userData = {
+                anchored: false,
+                canCollide: true,
+                mass: 1
+            };
+
+            scene.add(mesh);
+            objects.push(mesh);
+            
+            selectObject(mesh);
+            updateObjectCount();
+        }
+
+        function selectObject(object) {
+            if (selectedObject === object) return;
+            
+            if (selectedObject) {
+                selectedObject.material.emissive.setHex(0x000000);
+            }
+
+            selectedObject = object;
+            if (selectedObject) {
+                selectedObject.material.emissive.setHex(0x113333);
+                transformControl.attach(selectedObject);
+                document.getElementById('selectedObject').textContent = selectedObject.name;
+            }
+        }
+
+        function toggleTransform(mode) {
+            transformControl.setMode(mode);
+        }
+
+        function updateObjectCount() {
+            document.getElementById('objectCount').textContent = objects.length;
+        }
+
+        function onWindowResize() {
+            const viewport = document.getElementById('viewport');
+            camera.aspect = viewport.clientWidth / viewport.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+        }
+
+        // Update the property panel in real-time
+        function updatePropertyPanel() {
+            if (selectedObject) {
+                const position = selectedObject.position;
+                const rotation = selectedObject.rotation;
+                const scale = selectedObject.scale;
+
+                document.querySelector('.property-row:nth-child(2) .property-value').textContent = 
+                    `${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}`;
+                document.querySelector('.property-row:nth-child(3) .property-value').textContent = 
+                    `${rotation.x.toFixed(2)}, ${rotation.y.toFixed(2)}, ${rotation.z.toFixed(2)}`;
+                document.querySelector('.property-row:nth-child(4) .property-value').textContent = 
+                    `${scale.x.toFixed(2)}, ${scale.y.toFixed(2)}, ${scale.z.toFixed(2)}`;
+
+                // Update physics properties
+                const inputs = document.querySelectorAll('.property-group:last-child input');
+                inputs[0].checked = selectedObject.userData.anchored;
+                inputs[1].checked = selectedObject.userData.canCollide;
+                inputs[2].value = selectedObject.userData.mass;
+            }
+        }
+
+        // Update your animate function
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            // Update animations
+            objects.forEach(obj => {
+                if (obj.userData.animation && obj.userData.animation.playing) {
+                    const animation = obj.userData.animation;
+                    const elapsed = (Date.now() - animation.startTime) / 1000;
+                    const progress = (elapsed % animation.duration) / animation.duration;
+
+                    switch (animation.type) {
+                        case 'rotate':
+                            obj.rotation.y = progress * Math.PI * 2;
+                            break;
+                        case 'bounce':
+                            obj.position.y = Math.sin(progress * Math.PI * 2) * 0.5;
+                            break;
+                        case 'scale':
+                            const scale = 1 + Math.sin(progress * Math.PI * 2) * 0.2;
+                            obj.scale.set(scale, scale, scale);
+                            break;
+                    }
+                }
+            });
+
+            renderer.render(scene, camera);
+            
+            if (selectedObject) {
+                updatePropertyPanel();
+            }
+            
+            // Update FPS
+            document.getElementById('fps').textContent = 
+                Math.round(1000 / (performance.now() - lastTime));
+            lastTime = performance.now();
+        }
+
+        // AI Assistant functionality
+        const AI_COMMANDS = {
+            'create': {
+                matches: ['create', 'make', 'add', 'new'],
+                execute: (query) => {
+                    const types = {
+                        'cube': 'cube',
+                        'box': 'cube',
+                        'sphere': 'sphere',
+                        'ball': 'sphere',
+                        'cylinder': 'cylinder',
+                        'plane': 'plane',
+                        'floor': 'plane'
+                    };
+                    
+                    for (const [keyword, type] of Object.entries(types)) {
+                        if (query.includes(keyword)) {
+                            createObject(type);
+                            return `Created a new ${type}! You can now modify it in the Properties panel.`;
+                        }
+                    }
+                    return null;
+                }
+            },
+            'color': {
+                matches: ['color', 'paint', 'change color'],
+                execute: (query) => {
+                    if (!selectedObject) return "Please select an object first!";
+                    
+                    const colors = {
+                        'red': 0xff0000,
+                        'blue': 0x0000ff,
+                        'green': 0x00ff00,
+                        'yellow': 0xffff00,
+                        'purple': 0x800080,
+                        'white': 0xffffff,
+                        'black': 0x000000,
+                        'cyan': 0x00ffe7
+                    };
+
+                    for (const [color, hex] of Object.entries(colors)) {
+                        if (query.includes(color)) {
+                            selectedObject.material.color.setHex(hex);
+                            return `Changed the color to ${color}!`;
+                        }
+                    }
+                    return null;
+                }
+            },
+            'transform': {
+                matches: ['move', 'rotate', 'scale', 'position'],
+                execute: (query) => {
+                    if (!selectedObject) return "Please select an object first!";
+                    
+                    if (query.includes('move') || query.includes('position')) {
+                        transformControl.setMode('translate');
+                        return "Switched to move mode. Drag the arrows to move the object.";
+                    }
+                    if (query.includes('rotate')) {
+                        transformControl.setMode('rotate');
+                        return "Switched to rotate mode. Drag the circles to rotate the object.";
+                    }
+                    if (query.includes('scale')) {
+                        transformControl.setMode('scale');
+                        return "Switched to scale mode. Drag the cubes to resize the object.";
+                    }
+                    return null;
+                }
+            },
+            'material': {
+                matches: ['material', 'texture', 'surface'],
+                execute: (query) => {
+                    if (!selectedObject) return "Please select an object first!";
+                    
+                    const materials = {
+                        'metal': { metalness: 0.8, roughness: 0.2 },
+                        'plastic': { metalness: 0.1, roughness: 0.8 },
+                        'glass': { metalness: 0.9, roughness: 0.1, transparent: true, opacity: 0.6 },
+                        'wood': { metalness: 0.0, roughness: 0.9, color: 0x885533 }
+                    };
+
+                    for (const [material, props] of Object.entries(materials)) {
+                        if (query.includes(material)) {
+                            Object.assign(selectedObject.material, props);
+                            return `Changed material to ${material}!`;
+                        }
+                    }
+                    return null;
+                }
+            },
+            'delete': {
+                matches: ['delete', 'remove', 'destroy'],
+                execute: (query) => {
+                    if (!selectedObject) return "Please select an object first!";
+                    
+                    scene.remove(selectedObject);
+                    objects.splice(objects.indexOf(selectedObject), 1);
+                    selectedObject = null;
+                    updateObjectCount();
+                    return "Object deleted!";
+                }
+            }
+        };
+
+        // Update the sendToAI function
+        function sendToAI() {
+            const input = document.getElementById('aiInput');
+            const query = input.value.toLowerCase();
+            const messages = document.getElementById('aiMessages');
+
+            // Add user message
+            messages.innerHTML += `
+                <div class="ai-message user">
+                    ${input.value}
+                </div>
+            `;
+
+            // Try to execute command
+            let response = null;
+            for (const [category, command] of Object.entries(AI_COMMANDS)) {
+                if (command.matches.some(match => query.includes(match))) {
+                    response = command.execute(query);
+                                        if (response) break;
+                                    }
+                                }
+                    
+                                // Default response if no command matched
+                                if (!response) {
+                                    response = "Sorry, I didn't understand that. Try asking about creating objects, changing color, or transforming objects!";
+                                }
+                    
+                                // Add AI response
+                                messages.innerHTML += `
+                                    <div class="ai-message">
+                                        ${response}
+                                    </div>
+                                `;
+                                messages.scrollTop = messages.scrollHeight;
+                                input.value = '';
+                            }
+                    
+                            // Toggle AI Assistant visibility
+                            function toggleAI() {
+                                const ai = document.getElementById('aiAssistant');
+                                const aiButton = document.querySelector('.tool-button[title="AI Assistant"]');
+                                if (ai.style.display === 'none') {
+                                    ai.style.display = 'block';
+                                    aiButton.classList.add('active');
+                                } else {
+                                    ai.style.display = 'none';
+                                    aiButton.classList.remove('active');
+                                }
+                            }
+                    
+                            // Show AI Assistant by default
+                            document.getElementById('aiAssistant').style.display = 'block';
+                    
+                            // Allow pressing Enter to send message
+                            document.getElementById('aiInput').addEventListener('keydown', function(e) {
+                                if (e.key === 'Enter') sendToAI();
+                            });
+
+                            // Initialize the studio when the window loads
+                            window.addEventListener('DOMContentLoaded', init);
+
+                            // File menu functionality
+function handleFileMenu() {
+    const fileMenu = document.createElement('div');
+    fileMenu.className = 'context-menu';
+    fileMenu.innerHTML = `
+        <div class="menu-item" onclick="newProject()">New Project</div>
+        <div class="menu-item" onclick="saveProject()">Save</div>
+        <div class="menu-item" onclick="loadProject()">Load</div>
+        <div class="menu-item" onclick="exportProject()">Export</div>
+    `;
+    showContextMenu(fileMenu);
+}
+
+// Edit menu functionality
+function handleEditMenu() {
+    const editMenu = document.createElement('div');
+    editMenu.className = 'context-menu';
+    editMenu.innerHTML = `
+        <div class="menu-item" onclick="undo()">Undo</div>
+        <div class="menu-item" onclick="redo()">Redo</div>
+        <div class="menu-item" onclick="copy()">Copy</div>
+        <div class="menu-item" onclick="paste()">Paste</div>
+        <div class="menu-item" onclick="delete()">Delete</div>
+    `;
+    showContextMenu(editMenu);
+}
+
+// Add these styles to your CSS
+function openMaterialPanel() {
+    const materials = {
+        'Plastic': { metalness: 0.1, roughness: 0.8 },
+        'Metal': { metalness: 0.8, roughness: 0.2 },
+        'Glass': { metalness: 0.9, roughness: 0.1, transparent: true, opacity: 0.6 },
+        'Wood': { metalness: 0.0, roughness: 0.9, color: 0x885533 }
+    };
+
+    const materialSelect = document.querySelector('.property-group:nth-child(2) select');
+    materialSelect.addEventListener('change', function() {
+        const props = materials[this.value];
+        Object.assign(selectedObject.material, props);
+    });
+}
+
+function openColorPicker() {
+    const colorPicker = document.querySelector('.property-group:nth-child(2) input[type="color"]');
+    colorPicker.addEventListener('input', function() {
+        selectedObject.material.color.setStyle(this.value);
+    });
+    colorPicker.click();
+}
+
+function openTexturePanel() {
+    const transparencySlider = document.querySelector('.property-group:nth-child(2) input[type="range"]');
+    transparencySlider.addEventListener('input', function() {
+        selectedObject.material.transparent = this.value < 1;
+        selectedObject.material.opacity = 1 - this.value;
+    });
+}
+
+function openScriptEditor() {
+    // Create script editor modal
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 400px;
+        background: var(--panel);
+        border: 2px solid var(--primary);
+        border-radius: 10px;
+        z-index: 1000;
+        padding: 1rem;
+    `;
+
+    modal.innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <span>Script Editor - ${selectedObject.name}</span>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    style="background: none; border: none; color: var(--primary); cursor: pointer;">×</button>
+        </div>
+        <textarea style="width: 100%; height: calc(100% - 80px); background: #1a1a1a; 
+                       color: var(--primary); border: 1px solid var(--primary); padding: 1rem; 
+                       font-family: monospace; resize: none;">// ${selectedObject.name} Script
+function onStart() {
+    // Initialize object
+}
+
+function onUpdate() {
+    // Update every frame
+}
+        </textarea>
+        <button onclick="saveScript(this.previousElementSibling.value)" 
+                style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--primary); 
+                       color: var(--dark); border: none; border-radius: 4px; cursor: pointer;">
+            Save Script
+        </button>
+    `;
+
+    document.body.appendChild(modal);
+}
+
+function saveScript(code) {
+    if (selectedObject) {
+        selectedObject.userData.script = code;
+        console.log(`Script saved for ${selectedObject.name}`);
+    }
+}
+
+function openAnimationEditor() {
+    // Create animation editor modal
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        background: var(--panel);
+        border: 2px solid var(--primary);
+        border-radius: 10px;
+        z-index: 1000;
+        padding: 1rem;
+    `;
+
+    modal.innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <span>Animation Editor - ${selectedObject.name}</span>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    style="background: none; border: none; color: var(--primary); cursor: pointer;">×</button>
+        </div>
+        <div style="display: grid; gap: 1rem;">
+            <div>
+                <label>Animation Type</label>
+                <select id="animationType" style="width: 100%; padding: 0.5rem; 
+                        background: #1a1a1a; color: var(--primary); border: 1px solid var(--primary);">
+                    <option value="rotate">Rotate</option>
+                    <option value="bounce">Bounce</option>
+                    <option value="scale">Scale</option>
+                </select>
+            </div>
+            <div>
+                <label>Duration (seconds)</label>
+                <input type="number" id="animationDuration" value="1" min="0.1" step="0.1" 
+                       style="width: 100%; padding: 0.5rem; background: #1a1a1a; 
+                              color: var(--primary); border: 1px solid var(--primary);">
+            </div>
+            <button onclick="createAnimation()" 
+                    style="padding: 0.5rem 1rem; background: var(--primary); 
+                           color: var(--dark); border: none; border-radius: 4px; cursor: pointer;">
+                Create Animation
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+}
+
+function createAnimation() {
+    if (selectedObject) {
+        const type = document.getElementById('animationType').value;
+        const duration = parseFloat(document.getElementById('animationDuration').value);
+
+        selectedObject.userData.animation = {
+            type,
+            duration,
+            startTime: Date.now(),
+            playing: true
+        };
+    }
+}
+
+function openPhysicsPanel() {
+    // Update physics properties
+    const physicsInputs = document.querySelector('.property-group:last-child').querySelectorAll('input');
+    
+    physicsInputs[0].addEventListener('change', function() { // Anchored
+        selectedObject.userData.anchored = this.checked;
+    });
+
+    physicsInputs[1].addEventListener('change', function() { // CanCollide
+        selectedObject.userData.canCollide = this.checked;
+    });
+
+    physicsInputs[2].addEventListener('change', function() { // Mass
+        selectedObject.userData.mass = parseFloat(this.value);
+    });
+}
+
+// filepath: [studio.html](http://_vscodecontentref_/1)
+// Add these functions for menu functionality
+
+function showContextMenu(menu) {
+    document.body.appendChild(menu);
+    const rect = event.target.getBoundingClientRect();
+    menu.style.top = `${rect.bottom}px`;
+    menu.style.left = `${rect.left}px`;
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function closeMenu(e) {
+        if (!menu.contains(e.target) && e.target !== event.target) {
+            menu.remove();
+            document.removeEventListener('click', closeMenu);
+        }
+    });
+}
+
+// Project management functions
+function newProject() {
+    if (confirm('Start new project? Unsaved changes will be lost.')) {
+        objects.forEach(obj => scene.remove(obj));
+        objects.length = 0;
+        updateObjectCount();
+    }
+}
+
+function saveProject() {
+    const projectData = {
+        objects: objects.map(obj => ({
+            type: obj.geometry.type,
+            position: obj.position.toArray(),
+            rotation: obj.rotation.toArray(),
+            scale: obj.scale.toArray(),
+            material: {
+                color: obj.material.color.getHex(),
+                metalness: obj.material.metalness,
+                roughness: obj.material.roughness,
+                transparent: obj.material.transparent,
+                opacity: obj.material.opacity
+            },
+            userData: obj.userData
+        }))
+    };
+
+    const blob = new Blob([JSON.stringify(projectData)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'studio_project.json';
+    a.click();
+}
+
+// Update the event listeners in init()
+// filepath: d:\Project\studio.html
+// Add to your init() function
+
+// Add menu button event listeners
+document.querySelectorAll('.studio-header .tool-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const action = this.textContent.trim().split(' ')[1];
+        switch(action) {
+            case 'File':
+                handleFileMenu();
+                break;
+            case 'Edit':
+                handleEditMenu();
+                break;
+            case 'View':
+                handleViewMenu();
+                break;
+            case 'Tools':
+                handleToolsMenu();
+                break;
+            case 'Settings':
+                handleSettingsMenu();
+                break;
+        }
+    });
+});
+
+// Add toolbar button hover tooltips
+document.querySelectorAll('.toolbar .tool-button').forEach(button => {
+    button.addEventListener('mouseenter', function(e) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = this.title;
+        tooltip.style.cssText = `
+            position: absolute;
+            background: var(--panel);
+            color: var(--primary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1000;
+            top: ${e.target.offsetTop + e.target.offsetHeight + 5}px;
+            left: ${e.target.offsetLeft}px;
+        `;
+        document.body.appendChild(tooltip);
+    });
+
+    button.addEventListener('mouseleave', function() {
+        const tooltip = document.querySelector('.tooltip');
+        if (tooltip) tooltip.remove();
+    });
+});
+
+function toggleTemplates() {
+    const menu = document.getElementById('templateMenu');
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+function closeTemplateMenu() {
+    document.getElementById('templateMenu').style.display = 'none';
+}
+
+function loadTemplate(type) {
+    const templates = {
+        fps: {
+            objects: ['Player Spawn', 'Weapon System', 'Health System', 'Ammo System'],
+            scripts: ['PlayerController', 'WeaponManager', 'HealthManager'],
+            settings: { gameType: 'FPS', maxPlayers: 16, respawnTime: 5 }
+        },
+        platformer: {
+            objects: ['Player', 'Platforms', 'Collectibles', 'Enemies'],
+            scripts: ['PlatformerController', 'CollectibleSystem', 'LevelManager'],
+            settings: { gameType: '2D', gravity: -9.81, jumpForce: 10 }
+        },
+        // Add similar configurations for other templates
+    };
+
+    const template = templates[type];
+    if (template) {
+        // Clear existing scene
+        clearScene();
+        
+        // Load template contents
+        loadTemplateContents(template);
+        
+        // Close template menu
+        closeTemplateMenu();
+        
+        // Show success message
+        showNotification(`${type.toUpperCase()} template loaded successfully!`);
+    }
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'studio-notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+    </script>
+</body>
+</html>
