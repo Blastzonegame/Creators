@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blastzone | Rewards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: #0f0f0f;
+            color: #00ffe7;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .rewards-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .reward-card {
+            background: rgba(26, 26, 26, 0.95);
+            border: 2px solid #00ffe7;
+            border-radius: 15px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .reward-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(0, 255, 231, 0.1) 45%,
+                rgba(0, 255, 231, 0.2) 50%,
+                rgba(0, 255, 231, 0.1) 55%,
+                transparent 100%
+            );
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .reward-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .reward-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 255, 231, 0.2);
+        }
+
+        .reward-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 255, 231, 0.2);
+        }
+
+        .reward-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            filter: drop-shadow(0 0 5px rgba(0, 255, 231, 0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .reward-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .reward-task {
+            color: #888;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .reward-prize {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0, 255, 231, 0.1);
+            border-radius: 10px;
+            border: 1px dashed rgba(0, 255, 231, 0.3);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: transparent;
+            color: #00ffe7;
+            border: 2px solid #00ffe7;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #00ffe7;
+            color: #0f0f0f;
+            box-shadow: 0 0 10px #00ffe7;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.location.href='index.html'" class="back-btn">← Back</button>
+    
+    <div class="rewards-container">
+        <div class="rewards-grid">
+            <!-- Easy Rewards -->
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🎯</span>
+                    <span class="reward-name">Trigger Happy</span>
+                </div>
+                <div class="reward-task">
+                    Land 50 shots in one match
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Beginner's Luck" weapon skin
+                </div>
+            </div>
+
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🏃</span>
+                    <span class="reward-name">Jogger</span>
+                </div>
+                <div class="reward-task">
+                    Move 2km total across matches
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Sneakers with light trails
+                </div>
+            </div>
+
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🛡️</span>
+                    <span class="reward-name">Turtle</span>
+                </div>
+                <div class="reward-task">
+                    Survive for 10 minutes in a match
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Fortress" shield skin
+                </div>
+            </div>
+
+            <!-- Medium Rewards -->
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🔥</span>
+                    <span class="reward-name">Hot Streak</span>
+                </div>
+                <div class="reward-task">
+                    Achieve 5 eliminations in one match
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Blazing Fury" weapon skin
+                </div>
+            </div>
+
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">⏱️</span>
+                    <span class="reward-name">Speed Demon</span>
+                </div>
+                <div class="reward-task">
+                    Complete a match in under 15 minutes
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Lightning Fast" vehicle skin
+                </div>
+            </div>
+
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">💪</span>
+                    <span class="reward-name">Survivor</span>
+                </div>
+                <div class="reward-task">
+                    Win a match without dying
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Iron Will" medal
+                </div>
+            </div>
+
+            <!-- Hard Rewards -->
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🏆</span>
+                    <span class="reward-name">Champion</span>
+                </div>
+                <div class="reward-task">
+                    Be the MVP in a match
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Legendary Hero" title
+                </div>
+            </div>
+
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🔑</span>
+                    <span class="reward-name">Keymaster</span>
+                </div>
+                <div class="reward-task">
+                    Unlock all weapon slots
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Arsenal" achievement
+                </div>
+            </div>
+
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🎖️</span>
+                    <span class="reward-name">Veteran</span>
+                </div>
+                <div class="reward-task">
+                    Reach level 50
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Exclusive "Veteran's Pride" skin
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
