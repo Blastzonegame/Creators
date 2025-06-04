@@ -3,759 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blastzone Host</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #00ffe7;
-            --dark: #1a1a1a;
-            --panel: rgba(26, 26, 26, 0.95);
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Orbitron', sans-serif;
-            background: #0f0f0f;
-            color: var(--primary);
-            min-height: 100vh;
-        }
-
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
-        }
-
-        .game-card {
-            background: var(--panel);
-            border: 2px solid var(--primary);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(0, 255, 231, 0.3);
-        }
-
-        .game-thumbnail {
-            width: 100%;
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .game-info {
-            padding: 1rem;
-        }
-
-        .game-title {
-            font-size: 1.2rem;
-            margin: 0 0 0.5rem 0;
-        }
-
-        .game-stats {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.9rem;
-            color: #888;
-        }
-
-        .game-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .play-btn {
-            background: var(--primary);
-            color: var(--dark);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            flex: 1;
-            transition: all 0.3s ease;
-        }
-
-        .play-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 255, 231, 0.5);
-        }
-
-        .category-tabs {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem 2rem;
-            background: var(--panel);
-            border-bottom: 2px solid var(--primary);
-            overflow-x: auto;
-        }
-
-        .category-tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .category-tab:hover, .category-tab.active {
-            background: var(--primary);
-            color: var(--dark);
-        }
-
-        .filters {
-            padding: 1rem 2rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .search-bar {
-            background: var(--panel);
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-family: 'Orbitron', sans-serif;
-            width: 300px;
-        }
-
-        .sort-select {
-            background: var(--panel);
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-        }
-
-        .modal-content {
-            position: relative;
-            background: var(--panel);
-            margin: 5% auto;
-            padding: 20px;
-            width: 80%;
-            max-width: 1000px;
-            border: 2px solid var(--primary);
-            border-radius: 15px;
-        }
-
-        .close-modal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close-modal:hover,
-        .close-modal:focus {
-            color: var(--primary);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .server-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .server-card {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary);
-            border-radius: 10px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .server-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(0, 255, 231, 0.2);
-        }
-
-        .badges-section, .gamepass-section {
-            margin-top: 2rem;
-        }
-
-        .badge-card, .gamepass-card {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .stats-panel {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .auth-status {
-            position: fixed;
-            top: 1rem;
-            right: 2rem;
-            z-index: 100;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--panel);
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .auth-btn {
-            background: var(--primary);
-            color: var(--dark);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .auth-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 255, 231, 0.5);
-        }
-
-        .modal-content.auth-modal {
-            max-width: 400px;
-            margin: 10% auto;
-            padding: 2rem;
-            border: 2px solid var(--primary);
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid var(--primary);
-            background: rgba(0, 0, 0, 0.3);
-            color: var(--primary);
-            border-radius: 4px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .error-message {
-            color: #ff4444;
-            margin-top: 1rem;
-            text-align: center;
-        }
-
-        #welcomeUser {
-            color: var(--primary);
-            margin-right: 1rem;
-        }
-    </style>
+    <title>Your Website Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/background.css">
+    <link rel="stylesheet" href="css/games.css">
+    <!-- Add other head elements here -->
 </head>
 <body>
-    <script>
-        // Immediate authorization check
-        (function checkAuth() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (!currentUser) {
-                window.location.href = 'index.html?redirect=host';
-                return;
-            }
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('unauthorizedMessage').style.display = 'none';
-        })();
-    </script>
-
-    <div id="unauthorizedMessage" style="display: block; text-align: center; padding-top: 20%;">
-        <h2>Please log in to access the game platform</h2>
-        <button onclick="window.location.href='index.html'" class="auth-btn">
-            Return to Login
-        </button>
+    <div class="back-button">
+        <a href="index.html">
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </a>
     </div>
 
-    <div id="mainContent" style="display: none;">
-    <div class="auth-status">
-        <div id="userPanel" style="display: none;">
-            <span id="welcomeUser"></span>
-            <button onclick="logout()" class="auth-btn">Logout</button>
-        </div>
-        <div id="guestPanel">
-            <button onclick="showLoginModal()" class="auth-btn">Login to Play</button>
-        </div>
+    <div class="blastzone-title">
+        Blastzone Games
     </div>
 
-    <div id="loginModal" class="modal" style="display: none;">
-        <div class="modal-content auth-modal">
-            <span class="close-modal" onclick="closeLoginModal()">&times;</span>
-            <h2>Login to Play</h2>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="username" required>
+    <!-- Background Elements -->
+    <div class="background-container">
+        <div class="gradient-overlay"></div>
+        <div class="animated-shapes"></div>
+        <div class="particles"></div>
+    </div>
+
+    <!-- Main Content -->
+    <section class="experiences">
+        <div class="games-grid">
+            <!-- Candy Crush Game Card -->
+            <div class="game-card">
+                <div class="game-thumbnail">
+                    <img src="logos/candylogo.jpeg" alt="Candy Crush">
+                    <div class="play-overlay">
+                        <a href="games/01-Candy-Crush-Game/index.html" class="play-button">
+                            <i class="fas fa-play"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" required>
-                </div>
-                <button type="submit" class="auth-btn">Login</button>
-            </form>
-            <p class="error-message" id="loginError"></p>
-        </div>
-    </div>
-
-    <div class="category-tabs">
-        <div class="category-tab active">🎮 All Games</div>
-        <div class="category-tab">🏃 Adventure</div>
-        <div class="category-tab">⚔️ Combat</div>
-        <div class="category-tab">🏎️ Racing</div>
-        <div class="category-tab">🎲 RPG</div>
-        <div class="category-tab">🏗️ Building</div>
-        <div class="category-tab">🎯 FPS</div>
-        <div class="category-tab">🧩 Puzzle</div>
-    </div>
-
-    <div class="filters">
-        <input type="text" class="search-bar" placeholder="Search games...">
-        <select class="sort-select">
-            <option value="popular">Most Popular</option>
-            <option value="recent">Recently Added</option>
-            <option value="rating">Highest Rated</option>
-            <option value="players">Active Players</option>
-        </select>
-    </div>
-
-    <div class="game-grid" id="gameGrid"></div>
-
-    <div id="gameModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalGameTitle"></h2>
-                <span class="close-modal">&times;</span>
             </div>
-            <div class="modal-body">
-                <div class="server-list">
-                    <h3>Select Server</h3>
-                    <div id="serverGrid"></div>
+
+            <!-- Tic Tac Toe Game Card -->
+            <div class="game-card">
+                <div class="game-thumbnail">
+                    <div class="tic-tac-preview">
+                        <div class="tic-tac-toe">
+                            <div class="circle">O</div>
+                            <div class="cross">X</div>
+                            <div class="circle">O</div>
+                            <div class="cross">X</div>
+                            <div class="circle">O</div>
+                            <div class="circle">O</div>
+                            <div class="circle">O</div>
+                            <div class="cross">X</div>
+                            <div class="cross">X</div>
+                        </div>
+                    </div>
+                    <div class="play-overlay">
+                        <a href="games/13-Tic-Tac-Toe/index.html" class="play-button">
+                            <i class="fas fa-play"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="game-info-extended">
-                    <div class="stats-panel">
-                        <div>👥 Players Online: <span id="playerCount"></span></div>
-                        <div>❤️ Favorites: <span id="favoriteCount"></span></div>
-                        <div>🎮 Total Visits: <span id="visitCount"></span></div>
+            </div>
+
+            <!-- Ninja Fruit Game Card -->
+            <div class="game-card">
+                <div class="game-thumbnail">
+                    <img src="logos/Ninja Fruit.png" alt="Ninja Fruit">
+                    <div class="play-overlay">
+                        <a href="games/26-Fruit-Slicer-Game/index.html" class="play-button">
+                            <i class="fas fa-play"></i>
+                        </a>
                     </div>
-                    <div class="creator-info">
-                        <h3>Creator</h3>
-                        <div id="creatorName"></div>
+                </div>
+            </div>
+
+            <!-- Stack Tower Game Card -->
+            <div class="game-card">
+                <div class="game-thumbnail">
+                    <img src="logos/Stack Tower.jpg" alt="Stack Tower">
+                    <div class="play-overlay">
+                        <a href="games/06-Tower-Blocks/index.html" class="play-button">
+                            <i class="fas fa-play"></i>
+                        </a>
                     </div>
-                    <div class="badges-section">
-                        <h3>Available Badges</h3>
-                        <div id="badgesList"></div>
-                    </div>
-                    <div class="gamepass-section">
-                        <h3>Game Passes</h3>
-                        <div id="gamepassList"></div>
+                </div>
+            </div>
+
+            <!-- Whack a Mole Game Card -->
+            <div class="game-card">
+                <div class="game-thumbnail">
+                    <img src="logos/Whack a mole.jpeg" alt="Whack a Mole">
+                    <div class="play-overlay">
+                        <a href="games/29-Whack-A-Mole-Game/index.html" class="play-button">
+                            <i class="fas fa-play"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="unauthorizedMessage" style="display: none; text-align: center; padding-top: 20%;">
-        <h2>Please log in to access the game platform</h2>
-        <button onclick="window.location.href='index.html'" class="auth-btn">
-            Return to Login
-        </button>
-    </div>
-
-    <script>
-// Add this at the top of your script section
-function checkLoginAndRedirect() {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (!user) {
-        window.location.href = 'index.html?redirect=host';
-        return false;
-    }
-    return true;
-}
-
-// Add immediately-invoked function to check login on page load
-(function() {
-    if (!checkLoginAndRedirect()) {
-        return;
-    }
-})();
-
-// Authentication functions
-function checkAuth() {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (user) {
-        document.getElementById('userPanel').style.display = 'block';
-        document.getElementById('guestPanel').style.display = 'none';
-        document.getElementById('welcomeUser').textContent = `Welcome, ${user.username}`;
-        document.getElementById('mainContent').style.display = 'block';
-        document.getElementById('unauthorizedMessage').style.display = 'none';
-        return true;
-    } else {
-        document.getElementById('userPanel').style.display = 'none';
-        document.getElementById('guestPanel').style.display = 'block';
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('unauthorizedMessage').style.display = 'block';
-        return false;
-    }
-}
-
-function showLoginModal() {
-    document.getElementById('loginModal').style.display = 'block';
-}
-
-function closeLoginModal() {
-    document.getElementById('loginModal').style.display = 'none';
-    document.getElementById('loginError').textContent = '';
-}
-
-function handleLogin(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    const users = JSON.parse(localStorage.getItem('users')) || {};
-    const user = users[username];
-
-    if (user && user.password === password) {
-        localStorage.setItem('currentUser', JSON.stringify({ username: username }));
-        closeLoginModal();
-        checkAuth();
-    } else {
-        document.getElementById('loginError').textContent = 'Invalid username or password';
-    }
-}
-
-function logout() {
-    localStorage.removeItem('currentUser');
-    checkAuth();
-}
-
-// Modify the openGameModal function
-function openGameModal(title) {
-    if (!checkAuth()) {
-        showLoginModal();
-        return;
-    }
-    const game = games.find(g => g.title === title);
-    if (!game) return;
-
-    document.getElementById('modalGameTitle').textContent = game.title;
-    document.getElementById('playerCount').textContent = game.players.toLocaleString();
-    document.getElementById('favoriteCount').textContent = game.favorites.toLocaleString();
-    document.getElementById('visitCount').textContent = game.visits.toLocaleString();
-    document.getElementById('creatorName').textContent = game.creator;
-
-    const badgesList = document.getElementById('badgesList');
-    badgesList.innerHTML = game.badges.map(badge => `<div class="badge">${badge.name}: ${badge.description}</div>`).join('');
-
-    const gamepassList = document.getElementById('gamepassList');
-    gamepassList.innerHTML = game.gamepass.map(pass => `<div class="gamepass">${pass.name} - ${pass.price} Robux</div>`).join('');
-
-    // Render server list
-    const serverGrid = document.getElementById('serverGrid');
-    serverGrid.innerHTML = `
-        <div class="server-item">
-            <span>US East</span>
-            <span>Ping: 30ms</span>
-            <button class="play-btn" onclick="connectToServer('${game.id}', 'us-east')">Connect</button>
-        </div>
-        <div class="server-item">
-            <span>US West</span>
-            <span>Ping: 60ms</span>
-            <button class="play-btn" onclick="connectToServer('${game.id}', 'us-west')">Connect</button>
-        </div>
-        <div class="server-item">
-            <span>Europe</span>
-            <span>Ping: 90ms</span>
-            <button class="play-btn" onclick="connectToServer('${game.id}', 'eu')">Connect</button>
-        </div>
-        <div class="server-item">
-            <span>Asia</span>
-            <span>Ping: 120ms</span>
-            <button class="play-btn" onclick="connectToServer('${game.id}', 'asia')">Connect</button>
-        </div>
-    `;
-
-    document.getElementById('gameModal').style.display = 'block';
-}
-
-// Close modal when clicking on close button
-document.querySelector('.close-modal').addEventListener('click', function() {
-    document.getElementById('gameModal').style.display = 'none';
-});
-
-// Initialize the page
-renderGames(games);
-
-// Add event listeners for search and filters
-document.querySelector('.search-bar').addEventListener('input', function(e) {
-    const search = e.target.value.toLowerCase();
-    const filtered = games.filter(game => 
-        game.title.toLowerCase().includes(search) || 
-        game.description.toLowerCase().includes(search)
-    );
-    renderGames(filtered);
-});
-
-document.querySelector('.sort-select').addEventListener('change', function(e) {
-    const sortBy = e.target.value;
-    const sorted = [...games].sort((a, b) => {
-        switch(sortBy) {
-            case 'popular':
-                return b.players - a.players;
-            case 'rating':
-                return b.rating - a.rating;
-            case 'recent':
-                return new Date(b.date) - new Date(a.date);
-            default:
-                return 0;
-        }
-    });
-    renderGames(sorted);
-});
-
-document.querySelectorAll('.category-tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-        document.querySelector('.category-tab.active').classList.remove('active');
-        this.classList.add('active');
-        const category = this.textContent.split(' ')[1];
-        const filtered = category === 'All Games' 
-            ? games 
-            : games.filter(game => game.category === category);
-        renderGames(filtered);
-    });
-});
-
-        // Sample game data
-        const games = [
-            {
-                id: 'space-explorer',
-                title: "Space Explorer",
-                thumbnail: "space.jpg",
-                players: 1240,
-                rating: 4.8,
-                category: "Adventure",
-                description: "Explore vast galaxies and build your space empire",
-                creator: "BlastzoneStudio",
-                visits: 1000000,
-                favorites: 50000,
-                badges: [
-                    { name: "Space Pioneer", description: "Visit 10 planets" },
-                    { name: "Fleet Commander", description: "Build 5 ships" }
-                ],
-                gamepass: [
-                    { name: "VIP Access", price: 400, perks: ["Double XP", "Special Ship"] },
-                    { name: "Premium Ships", price: 800, perks: ["5 Exclusive Ships"] }
-                ]
-            },
-            {
-                title: "Zombie Defense",
-                thumbnail: "zombie.jpg",
-                players: 850,
-                rating: 4.5,
-                category: "Combat",
-                description: "Defend your base against waves of zombies"
-            },
-            // Add more games here
-        ];
-
-        function renderGames(games) {
-            const gameGrid = document.getElementById('gameGrid');
-            gameGrid.innerHTML = games.map(game => `
-                <div class="game-card">
-                    <div class="game-thumbnail" style="background-image: url(${game.thumbnail})"></div>
-                    <div class="game-info">
-                        <h3 class="game-title">${game.title}</h3>
-                        <div class="game-stats">
-                            <span>👥 ${game.players.toLocaleString()}</span>
-                            <span>⭐ ${game.rating}</span>
-                            <span>🎯 ${game.category}</span>
-                        </div>
-                        <p>${game.description}</p>
-                        <div class="game-actions">
-                            <button class="play-btn" onclick="checkAuth() ? openGameModal('${game.title}') : showLoginModal()">
-                                ▶ Play
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openGameModal(title) {
-            if (!checkAuth()) {
-                showLoginModal();
-                return;
-            }
-            const game = games.find(g => g.title === title);
-            if (!game) return;
-
-            document.getElementById('modalGameTitle').textContent = game.title;
-            document.getElementById('playerCount').textContent = game.players.toLocaleString();
-            document.getElementById('favoriteCount').textContent = game.favorites.toLocaleString();
-            document.getElementById('visitCount').textContent = game.visits.toLocaleString();
-            document.getElementById('creatorName').textContent = game.creator;
-
-            const badgesList = document.getElementById('badgesList');
-            badgesList.innerHTML = game.badges.map(badge => `<div class="badge">${badge.name}: ${badge.description}</div>`).join('');
-
-            const gamepassList = document.getElementById('gamepassList');
-            gamepassList.innerHTML = game.gamepass.map(pass => `<div class="gamepass">${pass.name} - ${pass.price} Robux</div>`).join('');
-
-            // Render server list
-            const serverGrid = document.getElementById('serverGrid');
-            serverGrid.innerHTML = `
-                <div class="server-item">
-                    <span>US East</span>
-                    <span>Ping: 30ms</span>
-                    <button class="play-btn" onclick="connectToServer('${game.id}', 'us-east')">Connect</button>
-                </div>
-                <div class="server-item">
-                    <span>US West</span>
-                    <span>Ping: 60ms</span>
-                    <button class="play-btn" onclick="connectToServer('${game.id}', 'us-west')">Connect</button>
-                </div>
-                <div class="server-item">
-                    <span>Europe</span>
-                    <span>Ping: 90ms</span>
-                    <button class="play-btn" onclick="connectToServer('${game.id}', 'eu')">Connect</button>
-                </div>
-                <div class="server-item">
-                    <span>Asia</span>
-                    <span>Ping: 120ms</span>
-                    <button class="play-btn" onclick="connectToServer('${game.id}', 'asia')">Connect</button>
-                </div>
-            `;
-
-            document.getElementById('gameModal').style.display = 'block';
-        }
-
-        // Replace the existing playGame function
-        async function playGame(gameId) {
-            const game = games.find(g => g.id === gameId);
-            if (!game) return;
-
-            const modal = document.getElementById('gameModal');
-            const modalTitle = document.getElementById('modalGameTitle');
-            const serverGrid = document.getElementById('serverGrid');
-            const playerCount = document.getElementById('playerCount');
-            const favoriteCount = document.getElementById('favoriteCount');
-            const visitCount = document.getElementById('visitCount');
-            const creatorName = document.getElementById('creatorName');
-            const badgesList = document.getElementById('badgesList');
-            const gamepassList = document.getElementById('gamepassList');
-
-            // Update modal content
-            modalTitle.textContent = game.title;
-            playerCount.textContent = game.players;
-            favoriteCount.textContent = game.favorites;
-            visitCount.textContent = game.visits.toLocaleString();
-            creatorName.textContent = game.creator;
-
-            // Generate badges list
-            badgesList.innerHTML = game.badges.map(badge => `
-                <div class="badge-card">
-                    <h4>${badge.name}</h4>
-                    <p>${badge.description}</p>
-                </div>
-            `).join('');
-
-            // Generate gamepass list
-            gamepassList.innerHTML = game.gamepass.map(pass => `
-                <div class="gamepass-card">
-                    <h4>${pass.name}</h4>
-                    <p>Price: ${pass.price} BZ</p>
-                    <ul>${pass.perks.map(perk => `<li>${perk}</li>`).join('')}</ul>
-                    <button class="buy-pass-btn">Purchase</button>
-                </div>
-            `).join('');
-
-            // Generate server list
-            serverGrid.innerHTML = gameServer.serverList.map(server => `
-                <div class="server-card" onclick="joinServer('${gameId}', '${server.id}')">
-                    <h4>${server.name}</h4>
-                    <div>Ping: ${server.ping}ms</div>
-                    <div>Players: ${Math.floor(Math.random() * server.capacity)}/${server.capacity}</div>
-                </div>
-            `).join('');
-
-            modal.style.display = 'block';
-        }
-
-        async function joinServer(gameId, serverId) {
-            const result = await gameServer.connect(gameId, serverId);
-            if (result.success) {
-                // Store game session data
-                sessionStorage.setItem('gameSession', JSON.stringify({
-                    gameId,
-                    serverId,
-                    sessionId: result.sessionId,
-                    timestamp: Date.now()
-                }));
-                
-                // Launch game
-                window.location.href = `game.html`;
-            } else {
-                alert('Failed to join server. Please try again.');
-            }
-        }
-
-        class GameServer {
-    constructor() {
-        this.serverList = [
-            { id: 'us-east', name: 'US East', ping: 30, capacity: 100 },
-            { id: 'us-west', name: 'US West', ping: 60, capacity: 100 },
-            { id: 'eu', name: 'Europe', ping: 90, capacity: 100 },
-            { id: 'asia', name: 'Asia', ping: 120, capacity: 100 }
-        ];
-    }
-
-    async connect(gameId, serverId) {
-        try {
-            console.log(`Connecting to ${serverId} for game ${gameId}...`);
-            // Simulate server connection
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            return { success: true, sessionId: Math.random().toString(36).substring(7) };
-        } catch (error) {
-            console.error('Connection failed:', error);
-            return { success: false, error: 'Connection failed' };
-        }
-    }
-}
-
-const gameServer = new GameServer();
-    </script>
-    </div>
+    <script src="js/gameManager.js"></script>
 </body>
 </html>
