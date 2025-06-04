@@ -1,0 +1,359 @@
+:root {
+    --primary: #5cd6ff;
+    --secondary: #ff9100;
+    --fortnite-blue: #19d0ff;
+    --fortnite-purple: #9d4dff;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'Burbank Big Condensed', 'Orbitron', sans-serif;
+    overflow: hidden;
+}
+
+#gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* Game UI Elements */
+.game-ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background: linear-gradient(rgba(0,0,0,0.8), transparent);
+}
+
+/* Player Stats */
+.player-stats {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.2rem;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.health-bar {
+    width: 200px;
+    height: 20px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid var(--fortnite-blue);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.health-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--fortnite-blue), var(--fortnite-purple));
+    transition: width 0.3s ease;
+}
+
+/* Menu Styles */
+.menu-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(45deg, var(--fortnite-blue), var(--fortnite-purple));
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 100;
+}
+
+.game-menu {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    padding: 2rem;
+    border: 2px solid var(--fortnite-blue);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.menu-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #1a1a1a, #2d365a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-content {
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+.loading-title {
+    color: var(--fortnite-blue);
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px var(--fortnite-blue);
+}
+
+.loading-tips {
+    color: #fff;
+    opacity: 0.8;
+    margin: 2rem 0;
+    font-style: italic;
+}
+
+.progress-bar {
+    width: 300px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 1rem;
+    box-shadow: 0 0 20px rgba(93, 214, 255, 0.3);
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--fortnite-blue), var(--fortnite-purple));
+    transition: width 0.3s ease;
+    animation: fillProgress 3s ease-out;
+}
+
+/* Combat UI Elements */
+.combat-overlay {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    pointer-events: auto;
+}
+
+.weapon-slot {
+    width: 80px;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--fortnite-blue);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.weapon-slot:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px var(--fortnite-blue);
+}
+
+.weapon-slot.active {
+    border-color: var(--fortnite-purple);
+    box-shadow: 0 0 20px var(--fortnite-purple);
+}
+
+/* Build Mode UI */
+.build-mode-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    display: none;
+}
+
+.build-preview {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--fortnite-blue);
+    background: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+}
+
+.floating-text {
+    position: fixed;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 4px #000;
+    pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fillProgress {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes floatUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
+/* Resource Counter */
+.resource-counter {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.resource {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.resource-icon {
+    font-size: 1.5rem;
+}
+
+.resource-amount {
+    font-size: 1.2rem;
+    color: var(--fortnite-blue);
+}
+
+/* Crosshair */
+.crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.crosshair::before {
+    width: 2px;
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.crosshair::after {
+    width: 100%;
+    height: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.storm-info {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.build-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.build-piece {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--fortnite-blue);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.build-piece:hover {
+    transform: scale(1.1);
+}
+
+.key-hint {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+}
+
+.tycoon-ui {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 5px;
+}

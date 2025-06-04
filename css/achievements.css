@@ -1,0 +1,109 @@
+.achievements-container {
+    display: grid;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+}
+
+.achievement-card {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--surface-dark);
+    border: var(--border-light);
+    border-radius: var(--radius-lg);
+    transition: all var(--anim-normal);
+}
+
+.achievement-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+}
+
+.achievement-card.completed {
+    border-color: var(--ui-success);
+    background: linear-gradient(
+        to right,
+        var(--surface-dark),
+        rgba(0, 255, 157, 0.1)
+    );
+}
+
+.achievement-icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    background: var(--surface-light);
+    border-radius: var(--radius-md);
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-info h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.achievement-info p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-sm);
+}
+
+.stats-container {
+    padding: var(--space-lg);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.stat-card {
+    background: var(--surface-dark);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.medals-showcase {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    padding: var(--space-md);
+    background: var(--surface-dark);
+    border-radius: var(--radius-lg);
+}
+
+.medal {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    background: var(--surface-light);
+    border-radius: var(--radius-md);
+    cursor: help;
+    transition: transform var(--anim-fast);
+}
+
+.medal:hover {
+    transform: scale(1.1);
+}

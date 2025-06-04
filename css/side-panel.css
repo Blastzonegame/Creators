@@ -1,0 +1,49 @@
+.side-panel {
+    background: var(--surface-dark);
+    padding: var(--space-lg);
+    border-left: var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
+.panel-header h3 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.refresh-timer {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.challenge-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.battle-pass-progress {
+    background: var(--surface-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    border: var(--border-light);
+}
+
+.tier {
+    padding: 4px 12px;
+    background: var(--gradient-brand);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 700;
+}

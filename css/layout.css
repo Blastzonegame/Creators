@@ -1,0 +1,26 @@
+/* Base Layout */
+.platform-container {
+    display: grid;
+    grid-template-columns: var(--nav-width) 1fr var(--sidebar-width);
+    min-height: 100vh;
+}
+
+/* Navigation */
+.side-nav {
+    background: var(--nav-bg);
+    padding: 2rem;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Main Content */
+.main-content {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* Side Panel */
+.side-panel {
+    background: var(--nav-bg);
+    padding: 2rem;
+    border-left: 1px solid rgba(255,255,255,0.1);
+}

@@ -1,0 +1,213 @@
+.experiences {
+    padding: var(--space-xl);
+    background: linear-gradient(
+        to bottom,
+        var(--surface-darker),
+        var(--surface-dark)
+    );
+}
+
+.section-title {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xl);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    padding-bottom: var(--space-md);
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--color-primary);
+    border-radius: 2px;
+}
+
+.experiences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-lg);
+    max-width: 1400px;
+    margin: 0 auto;
+    perspective: 1000px;
+}
+
+.experience-card {
+    background: var(--surface-dark);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    text-decoration: none;
+    transition: all var(--anim-fast);
+    position: relative;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.experience-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    opacity: 0;
+    transition: opacity var(--anim-fast);
+}
+
+.experience-card:hover {
+    transform: translateY(-8px) rotateX(5deg);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.2),
+        0 2px 8px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.experience-card:hover::before {
+    opacity: 1;
+}
+
+.experience-content {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.experience-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: var(--space-md);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    transition: transform var(--anim-fast);
+}
+
+.experience-card:hover .experience-icon {
+    transform: scale(1.1) translateY(-4px);
+}
+
+.experience-icon.game-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.experience-card:hover .experience-icon.game-logo {
+    transform: scale(1.05);
+}
+
+.experience-content h3 {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    margin-bottom: var(--space-sm);
+    font-weight: 600;
+    transition: color var(--anim-fast);
+}
+
+.experience-card:hover h3 {
+    color: var(--color-primary);
+}
+
+.experience-content p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: var(--space-md);
+    line-height: 1.5;
+}
+
+.experience-stat {
+    background: var(--surface-darker);
+    color: var(--color-primary);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-full);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all var(--anim-fast);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+}
+
+.experience-card:hover .experience-stat {
+    background: var(--color-primary);
+    color: var(--text-white);
+    transform: scale(1.05);
+}
+
+.game-logo-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: var(--space-sm);
+}
+
+.play-button-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--anim-fast);
+}
+
+.play-button-overlay i {
+    color: white;
+    font-size: 12px;
+}
+
+.experience-card:hover .play-button-overlay {
+    opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .experiences-grid {
+        grid-template-columns: repeat(2, 1fr);
+        perspective: none;
+    }
+    
+    .experience-card:hover {
+        transform: translateY(-4px) rotateX(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .experiences-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .experience-card,
+    .experience-card::before,
+    .experience-icon,
+    .experience-stat {
+        transition: none;
+        transform: none;
+    }
+    
+    .experience-card:hover {
+        transform: none;
+    }
+}

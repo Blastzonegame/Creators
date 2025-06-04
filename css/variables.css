@@ -1,0 +1,80 @@
+:root {
+    /* Brand Colors */
+    --color-primary: #FF2D55;
+    --color-secondary: #2D55FF;
+    --color-accent: #FFB830;
+    
+    /* Background Colors */
+    --bg-dark: #0A0A0A;
+    --bg-darker: #050505;
+    --surface-light: #1A1A1A;
+    --surface-dark: #141414;
+    
+    /* UI Colors */
+    --ui-success: #00FF9D;
+    --ui-warning: #FFB830;
+    --ui-error: #FF2D55;
+    --ui-info: #2D55FF;
+    
+    /* Text Colors */
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-disabled: rgba(255, 255, 255, 0.3);
+    
+    /* Gradients */
+    --gradient-brand: linear-gradient(135deg, #FF2D55, #2D55FF);
+    --gradient-surface: linear-gradient(135deg, rgba(26,26,26,0.9), rgba(10,10,10,0.9));
+    --gradient-glow: linear-gradient(180deg, rgba(255,45,85,0.15), transparent);
+    
+    /* Effects */
+    --glow-primary: 0 0 20px rgba(255, 45, 85, 0.3);
+    --glow-secondary: 0 0 20px rgba(45, 85, 255, 0.3);
+    
+    /* Borders */
+    --border-light: 1px solid rgba(255, 255, 255, 0.1);
+    --border-glow: 1px solid rgba(255, 45, 85, 0.3);
+    
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 20px;
+    
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    
+    /* Layout */
+    --nav-width: 280px;
+    --panel-width: 320px;
+    --header-height: 60px;
+    
+    /* Animations */
+    --anim-fast: 0.15s ease;
+    --anim-normal: 0.3s ease;
+    --anim-slow: 0.6s ease;
+}
+
+/* Assets Path */
+.assets {
+    --images-path: url('../assets/images/');
+    --videos-path: url('../assets/videos/');
+}
+
+/* Modern Glass Effects */
+.glass {
+    background: rgba(25, 208, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}

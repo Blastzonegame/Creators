@@ -1,0 +1,119 @@
+.shop-container {
+    padding: var(--space-lg);
+}
+
+.shop-categories {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    overflow-x: auto;
+    padding-bottom: var(--space-sm);
+}
+
+.category-btn {
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface-light);
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--anim-normal);
+    white-space: nowrap;
+}
+
+.category-btn.active {
+    background: var(--gradient-brand);
+    color: var(--text-primary);
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-lg);
+}
+
+.shop-item {
+    background: var(--surface-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform var(--anim-normal);
+}
+
+.shop-item:hover {
+    transform: translateY(-4px);
+}
+
+.shop-item.legendary {
+    background: linear-gradient(var(--surface-light), var(--surface-dark));
+    border: 1px solid #ffd700;
+}
+
+.shop-item.epic {
+    background: linear-gradient(var(--surface-light), var(--surface-dark));
+    border: 1px solid #ff44ff;
+}
+
+.item-image {
+    position: relative;
+    padding-top: 100%;
+}
+
+.item-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.featured-badge {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    padding: 4px var(--space-sm);
+    background: var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.item-info {
+    padding: var(--space-md);
+}
+
+.item-rarity {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    margin: var(--space-xs) 0;
+}
+
+.item-price {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.btn-purchase {
+    width: 100%;
+    padding: var(--space-md);
+    border: none;
+    background: var(--gradient-brand);
+    color: var(--text-primary);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--anim-fast);
+}
+
+.btn-purchase:disabled {
+    background: var(--surface-dark);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.btn-purchase:not(:disabled):hover {
+    filter: brightness(1.2);
+}
