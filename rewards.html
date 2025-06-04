@@ -123,9 +123,184 @@
             box-shadow: 0 0 10px #00ffe7;
         }
 
+        /* New styles for top games button and modal */
+        .top-games-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+            color: #00ffe7;
+            border: 2px solid #00ffe7;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .top-games-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 255, 231, 0.4);
+            background: rgba(0, 255, 231, 0.1);
+        }
+
+        .top-games-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            background: rgba(26, 26, 26, 0.95);
+            border: 2px solid #00ffe7;
+            border-radius: 20px;
+            padding: 2rem;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+        }
+
+        .top-games-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 1rem;
+        }
+
+        .top-games-table tr {
+            background: rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .top-games-table tr:hover {
+            transform: translateX(10px);
+            background: rgba(0, 255, 231, 0.1);
+        }
+
+        .top-games-table td {
+            padding: 1rem;
+            border: 1px solid rgba(0, 255, 231, 0.2);
+        }
+
+        .top-games-table td:first-child {
+            border-radius: 10px 0 0 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #00ffe7;
+        }
+
+        .top-games-table td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .game-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+
+        .game-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00ffe7;
+        }
+
+        .game-genre {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .game-creator {
+            color: #00ffe7;
+            font-style: italic;
+        }
+
+        .game-plays {
+            color: #888;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #00ffe7;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
+        }
+
+        /* Difficulty section headers */
+        .difficulty-title {
+            font-size: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        /* Easy - Green */
+        .easy-section .difficulty-title {
+            color: #4CAF50;
+        }
+        .easy-section .reward-card {
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+        }
+        .easy-section .reward-card:hover {
+            box-shadow: 0 0 25px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Medium - Yellow */
+        .medium-section .difficulty-title {
+            color: #FFC107;
+        }
+        .medium-section .reward-card {
+            border-color: #FFC107;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+        }
+        .medium-section .reward-card:hover {
+            box-shadow: 0 0 25px rgba(255, 193, 7, 0.4);
+        }
+
+        /* Hard - Orange */
+        .hard-section .difficulty-title {
+            color: #FF9800;
+        }
+        .hard-section .reward-card {
+            border-color: #FF9800;
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.2);
+        }
+        .hard-section .reward-card:hover {
+            box-shadow: 0 0 25px rgba(255, 152, 0, 0.4);
+        }
+
+        /* Expert - Red */
+        .expert-section .difficulty-title {
+            color: #F44336;
+        }
+        .expert-section .reward-card {
+            border-color: #F44336;
+            box-shadow: 0 0 15px rgba(244, 67, 54, 0.2);
+        }
+        .expert-section .reward-card:hover {
+            box-shadow: 0 0 25px rgba(244, 67, 54, 0.4);
         }
     </style>
 </head>
@@ -133,9 +308,10 @@
     <button onclick="window.location.href='index.html'" class="back-btn">← Back</button>
     
     <div class="rewards-container">
-        <div class="rewards-grid">
-            <!-- Easy Rewards -->
-            <div class="reward-card">
+        <!-- Easy Section -->
+        <h2 class="difficulty-title easy-section">🟢 Easy Challenges</h2>
+        <div class="rewards-grid easy-section">
+            <div class="reward-card easy-section">
                 <div class="reward-header">
                     <span class="reward-icon">🎯</span>
                     <span class="reward-name">Trigger Happy</span>
@@ -149,7 +325,7 @@
                 </div>
             </div>
 
-            <div class="reward-card">
+            <div class="reward-card easy-section">
                 <div class="reward-header">
                     <span class="reward-icon">🏃</span>
                     <span class="reward-name">Jogger</span>
@@ -163,7 +339,7 @@
                 </div>
             </div>
 
-            <div class="reward-card">
+            <div class="reward-card easy-section">
                 <div class="reward-header">
                     <span class="reward-icon">🛡️</span>
                     <span class="reward-name">Turtle</span>
@@ -177,8 +353,39 @@
                 </div>
             </div>
 
-            <!-- Medium Rewards -->
-            <div class="reward-card">
+            <div class="reward-card easy-section">
+                <div class="reward-header">
+                    <span class="reward-icon">🎲</span>
+                    <span class="reward-name">Variety Pack</span>
+                </div>
+                <div class="reward-task">
+                    Get kills with 3 different weapons
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Rainbow weapon charm
+                </div>
+            </div>
+
+            <div class="reward-card easy-section">
+                <div class="reward-header">
+                    <span class="reward-icon">💥</span>
+                    <span class="reward-name">Fireworks</span>
+                </div>
+                <div class="reward-task">
+                    Get 5 explosive kills
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Sparkler grenade effect
+                </div>
+            </div>
+        </div>
+
+        <!-- Medium Section -->
+        <h2 class="difficulty-title medium-section">🟡 Medium Challenges</h2>
+        <div class="rewards-grid medium-section">
+            <div class="reward-card medium-section">
                 <div class="reward-header">
                     <span class="reward-icon">🔥</span>
                     <span class="reward-name">Hot Streak</span>
@@ -192,7 +399,7 @@
                 </div>
             </div>
 
-            <div class="reward-card">
+            <div class="reward-card medium-section">
                 <div class="reward-header">
                     <span class="reward-icon">⏱️</span>
                     <span class="reward-name">Speed Demon</span>
@@ -206,7 +413,7 @@
                 </div>
             </div>
 
-            <div class="reward-card">
+            <div class="reward-card medium-section">
                 <div class="reward-header">
                     <span class="reward-icon">💪</span>
                     <span class="reward-name">Survivor</span>
@@ -220,8 +427,53 @@
                 </div>
             </div>
 
-            <!-- Hard Rewards -->
-            <div class="reward-card">
+            <div class="reward-card medium-section">
+                <div class="reward-header">
+                    <span class="reward-icon">🎯</span>
+                    <span class="reward-name">Headhunter</span>
+                </div>
+                <div class="reward-task">
+                    Get 15 headshots total
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Red dot sight unlock
+                </div>
+            </div>
+
+            <div class="reward-card medium-section">
+                <div class="reward-header">
+                    <span class="reward-icon">🤝</span>
+                    <span class="reward-name">Team Player</span>
+                </div>
+                <div class="reward-task">
+                    Get 10 assists
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    "Support Squad" badge
+                </div>
+            </div>
+
+            <div class="reward-card medium-section">
+                <div class="reward-header">
+                    <span class="reward-icon">💣</span>
+                    <span class="reward-name">Kaboom!</span>
+                </div>
+                <div class="reward-task">
+                    Get 2 multi-kills
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Explosive kill effect
+                </div>
+            </div>
+        </div>
+
+        <!-- Hard Section -->
+        <h2 class="difficulty-title hard-section">🟠 Hard Challenges</h2>
+        <div class="rewards-grid hard-section">
+            <div class="reward-card hard-section">
                 <div class="reward-header">
                     <span class="reward-icon">🏆</span>
                     <span class="reward-name">Champion</span>
@@ -235,7 +487,7 @@
                 </div>
             </div>
 
-            <div class="reward-card">
+            <div class="reward-card hard-section">
                 <div class="reward-header">
                     <span class="reward-icon">🔑</span>
                     <span class="reward-name">Keymaster</span>
@@ -249,7 +501,7 @@
                 </div>
             </div>
 
-            <div class="reward-card">
+            <div class="reward-card hard-section">
                 <div class="reward-header">
                     <span class="reward-icon">🎖️</span>
                     <span class="reward-name">Veteran</span>
@@ -262,7 +514,128 @@
                     Exclusive "Veteran's Pride" skin
                 </div>
             </div>
+
+            <div class="reward-card hard-section">
+                <div class="reward-header">
+                    <span class="reward-icon">⚡</span>
+                    <span class="reward-name">Quickdraw</span>
+                </div>
+                <div class="reward-task">
+                    Win 3 pistol-only fights
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Engraved revolver skin
+                </div>
+            </div>
+
+            <div class="reward-card hard-section">
+                <div class="reward-header">
+                    <span class="reward-icon">👻</span>
+                    <span class="reward-name">Ninja</span>
+                </div>
+                <div class="reward-task">
+                    Get 5 stealth kills (from behind)
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Footstep muffler perk
+                </div>
+            </div>
+
+            <div class="reward-card hard-section">
+                <div class="reward-header">
+                    <span class="reward-icon">🎮</span>
+                    <span class="reward-name">Versatile</span>
+                </div>
+                <div class="reward-task">
+                    Win with 3 different characters
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Universal emote
+                </div>
+            </div>
+        </div>
+
+        <!-- Expert Section -->
+        <h2 class="difficulty-title expert-section">🔴 Expert Challenges</h2>
+        <div class="rewards-grid expert-section">
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">💀</span>
+                    <span class="reward-name">Dominator</span>
+                </div>
+                <div class="reward-task">
+                    Get 10 kills in one match
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Skull player icon
+                </div>
+            </div>
+
+            <div class="reward-card">
+                <div class="reward-header">
+                    <span class="reward-icon">🌟</span>
+                    <span class="reward-name">Blastzone Star</span>
+                </div>
+                <div class="reward-task">
+                    Complete 15/20 challenges
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Animated golden border
+                </div>
+            </div>
+
+            <div class="reward-card expert-section">
+                <div class="reward-header">
+                    <span class="reward-icon">🎯</span>
+                    <span class="reward-name">Sniper Pro</span>
+                </div>
+                <div class="reward-task">
+                    Get 3 headshots in a row
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Thermal scope
+                </div>
+            </div>
+
+            <div class="reward-card expert-section">
+                <div class="reward-header">
+                    <span class="reward-icon">🤺</span>
+                    <span class="reward-name">Duelist</span>
+                </div>
+                <div class="reward-task">
+                    Win 5 melee fights
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Jeweled dagger
+                </div>
+            </div>
+
+            <div class="reward-card expert-section">
+                <div class="reward-header">
+                    <span class="reward-icon">🧠</span>
+                    <span class="reward-name">Strategist</span>
+                </div>
+                <div class="reward-task">
+                    Win without dying
+                </div>
+                <div class="reward-prize">
+                    <span class="reward-icon">🎁</span>
+                    Tactical HUD overlay
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Close modal when clicking overlay
+        document.getElementById('modalOverlay').onclick = hideTopGames;
+    </script>
 </body>
 </html>
