@@ -2,227 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Playing Game - Blastzone</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+    <title>Blastzone Game</title>
+    <link rel="stylesheet" href="css/game.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="js/loadingManager.js"></script>
     <style>
-        :root {
-            --primary: #00ffe7;
-            --dark: #1a1a1a;
-            --panel: rgba(26, 26, 26, 0.95);
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Orbitron', sans-serif;
-            background: #0f0f0f;
-            color: var(--primary);
-            overflow: hidden;
-        }
-
-        #gameContainer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .game-ui {
-            position: fixed;
-            padding: 1rem;
-            z-index: 100;
-        }
-
-        .game-stats {
-            top: 1rem;
-            left: 1rem;
-            background: var(--panel);
-            border: 1px solid var(--primary);
-            border-radius: 10px;
-            padding: 1rem;
-        }
-
-        .game-chat {
-            bottom: 1rem;
-            right: 1rem;
-            width: 300px;
-            background: var(--panel);
-            border: 1px solid var(--primary);
-            border-radius: 10px;
-        }
-
-        .chat-messages {
-            height: 200px;
-            overflow-y: auto;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .chat-input {
-            display: flex;
-            padding: 0.5rem;
-            gap: 0.5rem;
-        }
-
-        .chat-input input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 0.5rem;
-            border-radius: 5px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .leave-btn {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: var(--primary);
-            color: var(--dark);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            z-index: 100;
+        #gameContainer { display: none; }
+        .loading-screen {
+            opacity: 1;
+            transition: opacity 0.5s ease;
         }
     </style>
 </head>
 <body>
-    <div id="gameContainer"></div>
-    
-    <div class="game-ui game-stats">
-        <div>Players: <span id="playerCount">0</span></div>
-        <div>FPS: <span id="fps">0</span></div>
-        <div>Ping: <span id="ping">0</span>ms</div>
-    </div>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-ui">
+            <div class="top-bar">
+                <div class="player-stats">
+                    <div class="stat">
+                        <span>❤️</span>
+                        <div class="health-bar">
+                            <div class="health-fill"></div>
+                        </div>
+                    </div>
+                    <div class="stat">🏃 <span id="speed">0</span></div>
+                    <div class="stat">💰 <span id="coins">0</span></div>
+                    <div class="stat">👥 <span id="players">0</span></div>
+                </div>
+            </div>
+        </div>
+        <button class="menu-btn" onclick="game.toggleMenu()">☰ Menu</button>
+        <div class="game-menu" id="gameMenu">
+            <h2>Game Menu</h2>
+            <button onclick="game.resumeGame()">Resume</button>
+            <button onclick="window.location.href='host.html'">Exit to Lobby</button>
+        </div>
 
-    <div class="game-ui game-chat">
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Press Enter to chat...">
+        <div class="combat-overlay">
+            <div class="weapon-slot" data-slot="1">1</div>
+            <div class="weapon-slot active" data-slot="2">2</div>
+            <div class="weapon-slot" data-slot="3">3</div>
+            <div class="weapon-slot" data-slot="4">4</div>
+        </div>
+
+        <div class="resource-counter">
+            <div class="resource">
+                <span class="resource-icon">🪵</span>
+                <span class="resource-amount">0</span>
+            </div>
+            <div class="resource">
+                <span class="resource-icon">🧱</span>
+                <span class="resource-amount">0</span>
+            </div>
+            <div class="resource">
+                <span class="resource-icon">⚙️</span>
+                <span class="resource-amount">0</span>
+            </div>
+        </div>
+
+        <div class="crosshair"></div>
+
+        <div class="game-overlay">
+            <div class="storm-info">
+                <div class="storm-timer">Storm closing in: <span id="stormTimer">5:00</span></div>
+                <div class="players-left">Players remaining: <span id="playersLeft">100</span></div>
+            </div>
+
+            <div class="build-controls">
+                <div class="build-piece" data-type="wall">
+                    <img src="assets/wall.png" alt="Wall">
+                    <span class="key-hint">Q</span>
+                </div>
+                <div class="build-piece" data-type="floor">
+                    <img src="assets/floor.png" alt="Floor">
+                    <span class="key-hint">F</span>
+                </div>
+                <div class="build-piece" data-type="stairs">
+                    <img src="assets/stairs.png" alt="Stairs">
+                    <span class="key-hint">R</span>
+                </div>
+            </div>
+
+            <div class="tycoon-ui" style="display: none;">
+                <div class="money-counter">
+                    <span class="coin-icon">💰</span>
+                    <span id="money">0</span>
+                </div>
+                <div class="upgrades">
+                    <button class="upgrade-btn" data-upgrade="speed">
+                        Speed Boost (100 coins)
+                    </button>
+                    <button class="upgrade-btn" data-upgrade="jump">
+                        Super Jump (200 coins)
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-
-    <button class="leave-btn" onclick="leaveGame()">Leave Game</button>
-
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <h1 class="loading-title">BLASTZONE</h1>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="loading-tips">
+                Tip: Use WASD to move and Space to jump
+            </div>
+        </div>
+    </div>
+    <script src="js/loader.js"></script>
+    <script src="js/game.js"></script>
     <script>
-        class GameInstance {
-            constructor() {
-                this.scene = new THREE.Scene();
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                this.renderer = new THREE.WebGLRenderer();
-                this.players = new Map();
-                this.lastTime = performance.now();
-                
-                this.initialize();
-                this.setupEventListeners();
-                this.animate();
-            }
-
-            initialize() {
-                // Setup renderer
-                this.renderer.setSize(window.innerWidth, window.innerHeight);
-                document.getElementById('gameContainer').appendChild(this.renderer.domElement);
-
-                // Setup camera
-                this.camera.position.z = 5;
-
-                // Add ambient light
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-                this.scene.add(ambientLight);
-
-                // Add directional light
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-                directionalLight.position.set(5, 5, 5);
-                this.scene.add(directionalLight);
-
-                // Create player
-                this.createPlayer();
-            }
-
-            createPlayer() {
-                const geometry = new THREE.BoxGeometry();
-                const material = new THREE.MeshPhongMaterial({ color: 0x00ffe7 });
-                const player = new THREE.Mesh(geometry, material);
-                this.scene.add(player);
-                this.players.set('local', player);
-            }
-
-            setupEventListeners() {
-                window.addEventListener('resize', () => {
-                    this.camera.aspect = window.innerWidth / window.innerHeight;
-                    this.camera.updateProjectionMatrix();
-                    this.renderer.setSize(window.innerWidth, window.innerHeight);
-                });
-
-                window.addEventListener('keydown', (e) => this.handleInput(e));
-            }
-
-            handleInput(e) {
-                const player = this.players.get('local');
-                const speed = 0.1;
-
-                switch(e.key) {
-                    case 'w': player.position.z -= speed; break;
-                    case 's': player.position.z += speed; break;
-                    case 'a': player.position.x -= speed; break;
-                    case 'd': player.position.x += speed; break;
-                    case ' ': player.position.y += speed; break;
-                    case 'Shift': player.position.y -= speed; break;
-                }
-            }
-
-            animate() {
-                requestAnimationFrame(() => this.animate());
-
-                // Update FPS counter
-                const now = performance.now();
-                const fps = Math.round(1000 / (now - this.lastTime));
-                document.getElementById('fps').textContent = fps;
-                this.lastTime = now;
-
-                // Update player count
-                document.getElementById('playerCount').textContent = this.players.size;
-
-                // Simulate ping
-                document.getElementById('ping').textContent = Math.round(Math.random() * 30 + 20);
-
-                this.renderer.render(this.scene, this.camera);
-            }
-        }
-
-        // Initialize game when page loads
-        const game = new GameInstance();
-
-        function leaveGame() {
-            if(confirm('Are you sure you want to leave the game?')) {
-                window.location.href = 'host.html';
-            }
-        }
-
-        // Chat functionality
-        const chatInput = document.getElementById('chatInput');
-        const chatMessages = document.getElementById('chatMessages');
-
-        chatInput.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter' && chatInput.value.trim()) {
-                const message = chatInput.value;
-                const user = JSON.parse(localStorage.getItem('currentUser'));
-                addChatMessage(user.username, message);
-                chatInput.value = '';
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = new GameLoader();
+            loader.init();
         });
-
-        function addChatMessage(username, message) {
-            const messageDiv = document.createElement('div');
-            messageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
     </script>
 </body>
 </html>
