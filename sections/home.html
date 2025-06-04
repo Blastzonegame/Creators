@@ -1,0 +1,94 @@
+<div class="home-page">
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+        <div class="banner-content">
+            <h1 class="hero-title">Welcome to Blastzone</h1>
+            <div class="player-status">
+                <div class="level-display">
+                    <div class="level-badge">
+                        <span class="level-number">1</span>
+                    </div>
+                    <div class="xp-bar">
+                        <div class="xp-fill" style="width: 0%"></div>
+                        <span class="xp-text">0/1000 XP</span>
+                    </div>
+                </div>
+                <div class="daily-streak">
+                    <span class="streak-count">🔥 0 Day Streak</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Section -->
+    <div class="featured-section">
+        <div class="featured-carousel">
+            <div class="carousel-track">
+                <div class="carousel-slide active">
+                    <video autoplay muted loop class="slide-video">
+                        <source src="assets/videos/battle-royale.mp4" type="video/mp4">
+                    </video>
+                    <div class="slide-content">
+                        <div class="content-badge pulse">NEW SEASON</div>
+                        <h2>Battle Royale Season 1</h2>
+                        <p>Drop in, gear up, and become the champion!</p>
+                        <div class="action-buttons">
+                            <button class="play-now-btn">
+                                <span class="btn-glow"></span>
+                                PLAY NOW
+                            </button>
+                            <button class="learn-more-btn">LEARN MORE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-controls">
+                <button class="control prev">◄</button>
+                <div class="carousel-indicators"></div>
+                <button class="control next">►</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Grid -->
+    <div class="quick-access-grid">
+        <!-- Daily Quests -->
+        <div class="quick-tile" data-tile="quests">
+            <div class="tile-header">
+                <h3>Daily Quests</h3>
+                <span class="refresh-timer"></span>
+            </div>
+            <div class="quests-container">
+                <div class="quest-list"></div>
+            </div>
+        </div>
+
+        <!-- Quick Play -->
+        <div class="quick-tile" data-tile="quick-play">
+            <div class="tile-header">
+                <h3>Quick Play</h3>
+            </div>
+            <div class="game-modes">
+                <button class="mode-btn" data-mode="battle-royale">
+                    <span class="mode-icon">⚔️</span>
+                    <span class="mode-name">Battle Royale</span>
+                    <span class="player-count">12,345</span>
+                </button>
+                <button class="mode-btn" data-mode="team-match">
+                    <span class="mode-icon">👥</span>
+                    <span class="mode-name">Team Match</span>
+                    <span class="player-count">8,421</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Friend Activity -->
+        <div class="quick-tile" data-tile="friends">
+            <div class="tile-header">
+                <h3>Friend Activity</h3>
+                <span class="online-count"></span>
+            </div>
+            <div class="friends-list"></div>
+        </div>
+    </div>
+</div>
